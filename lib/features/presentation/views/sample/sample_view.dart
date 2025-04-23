@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template_new/core/services/dependency_injection.dart';
-import 'package:flutter_template_new/features/presentation/bloc/base_bloc.dart';
-import 'package:flutter_template_new/features/presentation/bloc/sample/sample_bloc.dart';
-import 'package:flutter_template_new/features/presentation/views/base_view.dart';
 
+import 'package:flutter/material.dart';
+
+import '../../../../core/services/dependency_injection.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_stylings.dart';
+import '../../bloc/base_bloc.dart';
+import '../../bloc/sample/sample_bloc.dart';
+import '../base_view.dart';
 
 class SampleView extends BaseView {
   const SampleView({super.key});

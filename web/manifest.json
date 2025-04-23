@@ -1,6 +1,6 @@
 {
-    "name": "flutter_template_new",
-    "short_name": "flutter_template_new",
+    "name": "{PROJECT_NAME}",
+    "short_name": "{PROJECT_NAME}",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
