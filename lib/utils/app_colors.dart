@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-
-  static const Color appWhiteColor = Color(0xFFFFFFFF);        // Card/Surface
-  static const Color appBackgroundColor = Color(0xFFF9FAFB);   // Light background
-  static const Color primaryColor = Color(0xFF4CAF50);          // Healthy green
-  static const Color primaryVariant = Color(0xFF388E3C);        // Darker green for buttons/headers
-  static const Color secondaryColor = Color(0xFF00BCD4);        // Teal accent
-  static const Color appBlackColor = Color(0xFF212121);         // Primary text
-  static const Color appGreyColor = Color(0xFF757575);          // Secondary text
-  static const Color appRedColor = Color(0xFFE53935);           // Error/warning
-  static const Color successColor = Color(0xFF43A047);          // Success/positive
-  static const Color appListBoxColor = Color(0xFFE0E0E0);       // Optional light grey for cards or dividers
+  static const Color appWhiteColor = Color(0xFFFFFFFF); // Card/Surface
+  static const Color appBackgroundColor = Color(0xFFF8F9F9); // Light background
+  static const Color primaryColor = Color(0xFFC9FAFF); // Fresh green
+  static const Color primaryVariant = Color(0xFF388E3C); // Darker green for buttons/headers
+  static const Color secondaryColor = Color(0xFF00BCD4); // Teal accent
+  static const Color appBlackColor = Color(0xFF2C3E50); // Dark text
+  static const Color appGreyColor = Color(0xFF7F8C8D); // Medium grey
+  static const Color appRedColor = Color(0xFFE74C3C); // Error red
+  static const Color successColor = Color(0xFF43A047); // Success/positive
+  static const Color appListBoxColor =
+      Color(0xFFE0E0E0); // Optional light grey for cards or dividers
 
   ///Colors
   // static const Color primaryColor = Color(0xff6728c5);
   static const Color darkBlue = Color(0xff084297);
-  static const Color whiteColor = Color(0xffffffff);
-  static const Color blackColor = Color(0xff2B2B2B);
+  static const Color whiteColor = Color(0xFFFFFFFF);
+  static const Color blackColor = Color(0xFF2C3E50);
   static const Color lightGrey = Color(0xffF7F7F9);
   static const Color bgColor = Color(0xffF8F9FC);
   static const Color darkGrey = Color(0xff707B81);
