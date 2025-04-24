@@ -56,4 +56,10 @@ class AppStrings {
   // Button Text
   static const String registerButton = "Register";
   static const String loginButton = "Login";
+
+  // Login Screen
+  static const String welcomeBack = "Welcome Back!";
+  static const String loginDescription =
+      "Please login to continue managing your health journey";
+  static const String forgotPassword = "Forgot Password?";
 }

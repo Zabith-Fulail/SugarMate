@@ -32,6 +32,8 @@ class AppTextField extends StatelessWidget {
       validator: validator,
       readOnly: readOnly,
       onTap: onTap,
+      cursorColor: AppColors.appBlackColor,
+      style: TextStyle(color: AppColors.appBlackColor),
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: AppColors.appGreyColor),
@@ -43,6 +45,8 @@ class AppTextField extends StatelessWidget {
           borderSide: BorderSide(color: AppColors.primaryColor),
         ),
         suffixIcon: suffixIcon,
+        focusColor: AppColors.appBlackColor,
+        hoverColor: AppColors.appBlackColor.withValues(alpha: 0.1),
       ),
     );
   }
