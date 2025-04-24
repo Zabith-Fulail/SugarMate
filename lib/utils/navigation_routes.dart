@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sugar_mate/features/presentation/views/home_view/home_main_view.dart';
 import 'package:sugar_mate/features/presentation/views/landing_page/landing_screen.dart';
 import 'package:sugar_mate/features/presentation/views/login/login_screen.dart';
 import 'package:sugar_mate/features/presentation/views/signup/signup_screen.dart';
@@ -12,7 +13,8 @@ class Routes {
   static const String kLandingScreen = "kLandingScreen";
   static const String kLoginScreen = "kLoginScreen";
   static const String kSignupScreen = "kSignupScreen";
-  
+  static const String kHomeMainView = "kHomeMainView";
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
     switch (settings.name) {
@@ -27,6 +29,9 @@ class Routes {
         break;
       case Routes.kSignupScreen:
         page = const SignupScreen();
+        break;
+      case Routes.kHomeMainView:
+        page = const HomeMainView();
         break;
       default:
         page = Scaffold(
