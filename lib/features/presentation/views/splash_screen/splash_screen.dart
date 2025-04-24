@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_strings.dart';
 import '../../../../utils/navigation_routes.dart';
-import '../../../services/auth_service.dart';
+import '../../../../core/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.3),
+                            color: AppColors.primaryColor.withValues(alpha: 0.3),
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
