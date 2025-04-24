@@ -5,6 +5,8 @@ import 'package:sizer/sizer.dart';
 import 'core/my_app.dart';
 import 'core/services/dependency_injection.dart' as di;
 import 'utils/app_colors.dart';
+import 'utils/app_strings.dart';
+import 'utils/navigation_routes.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -17,18 +19,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.setupLocator();
 
-  runApp(
-    Sizer(
-      builder: (context, orientation, deviceType) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: MediaQuery.of(
-              context,
-            ).textScaleFactor.clamp(0.5, 1.4),
-          ),
-          child: const MyApp(),
-        );
-      },
+  runApp(MaterialApp(
+    title: AppStrings.appName,
+    theme: ThemeData(
+      primaryColor: AppColors.primaryColor,
+      // ... other theme settings
     ),
-  );
+    initialRoute: Routes.kSplashScreen,
+    onGenerateRoute: Routes.generateRoute,
+  ));
 }

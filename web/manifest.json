@@ -1,6 +1,6 @@
 {
-    "name": "{PROJECT_NAME}",
-    "short_name": "{PROJECT_NAME}",
+    "name": "sugar_mate",
+    "short_name": "sugar_mate",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -15,7 +15,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       onGenerateRoute: Routes.generateRoute,
-      initialRoute: Routes.kSampleView,
+      initialRoute: Routes.kSplashScreen,
       debugShowCheckedModeBanner: true,
       builder:
           (context, child) => MediaQuery(
