@@ -1,5 +1,11 @@
 class AppStrings {
-  // App Name
+  ///error messages
+  static const invalidUsernameErrorMsg =
+      'Invalid username. Please check your input and try again.';
+  static const invalidPasswordErrorMsg =
+      'Incorrect password. Please try again.';
+  static const noInternetErrorMsg =
+      'Unable to connect to the internet. Please check your network connection and try again';
   static const String appName = "Sugar Mate";
   static const String appTagline = "Your diabetes management companion";
 
@@ -37,4 +43,17 @@ class AppStrings {
   // Landing Screen
   static const String welcomeToSugarMate = "Welcome to Sugar Mate!";
   static const String getStarted = "Get Started";
+  static const String aiCompanionTagline =
+      "Your AI-Powered Companion\nfor Better Health";
+  static const String joinUsersText =
+      "Join thousands of users managing their health smartly";
+
+  // Landing Screen Features
+  static const String aiHealthInsights = "AI-Powered Health Insights";
+  static const String secureHealthData = "Secure Health Data";
+  static const String healthMonitoring = "24/7 Health Monitoring";
+
+  // Button Text
+  static const String registerButton = "Register";
+  static const String loginButton = "Login";
 }

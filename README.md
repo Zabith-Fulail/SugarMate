@@ -1,4 +1,4 @@
-# sugar_mate
+# flutter_template_new
 
 A new Flutter project.
 
