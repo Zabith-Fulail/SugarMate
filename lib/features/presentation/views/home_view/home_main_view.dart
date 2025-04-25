@@ -1,9 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:sugar_mate/features/presentation/views/home_view/widget/hamburger_menu.dart';
+import 'package:sugar_mate/features/presentation/views/home_view/widget/option_card.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../widgets/carousel_item.dart';
-import '../../widgets/drawer_menu_item.dart';
 
 class HomeMainView extends StatefulWidget {
   const HomeMainView({super.key});
@@ -23,7 +24,7 @@ class _HomeMainViewState extends State<HomeMainView> {
       'description': 'Monitor your diabetes metrics in real-time',
     },
     {
-      'imageUrl': 'assets/images/health2.jpg',
+      'imageUrl': 'assets/images/health2.png',
       'title': 'Smart Predictions',
       'description': 'AI-powered diabetes management insights',
     },
@@ -42,6 +43,15 @@ class _HomeMainViewState extends State<HomeMainView> {
         backgroundColor: AppColors.primaryColor,
         elevation: 0,
         title: const Text('Dashboard'),
+        iconTheme: IconThemeData(
+          color: AppColors.appWhiteColor
+        ),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColors.appWhiteColor,
+        ),
         actions: [
           CircleAvatar(
             radius: 20,
@@ -54,7 +64,7 @@ class _HomeMainViewState extends State<HomeMainView> {
           const SizedBox(width: 16),
         ],
       ),
-      drawer: _buildDrawer(),
+      drawer: HamburgerMenu(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +130,7 @@ class _HomeMainViewState extends State<HomeMainView> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildOptionCard(
+                        child: OptionCard(
                           icon: Icons.analytics,
                           title: 'Prediction',
                           onTap: () {
@@ -130,7 +140,7 @@ class _HomeMainViewState extends State<HomeMainView> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildOptionCard(
+                        child: OptionCard(
                           icon: Icons.upload_file,
                           title: 'Upload Receipts',
                           onTap: () {
@@ -149,103 +159,4 @@ class _HomeMainViewState extends State<HomeMainView> {
     );
   }
 
-  Widget _buildDrawer() {
-    return Drawer(
-      child: Column(
-        children: [
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor,
-            ),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: AppColors.appWhiteColor,
-              child: Icon(
-                Icons.person,
-                color: AppColors.primaryColor,
-                size: 40,
-              ),
-            ),
-            accountName: const Text('John Doe'),
-            accountEmail: const Text('john.doe@example.com'),
-          ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerMenuItem(
-                  icon: Icons.medical_services,
-                  title: 'Doctors',
-                  onTap: () {},
-                ),
-                DrawerMenuItem(
-                  icon: Icons.receipt_long,
-                  title: 'Previous Receipts',
-                  onTap: () {},
-                ),
-                DrawerMenuItem(
-                  icon: Icons.history,
-                  title: 'Prediction History',
-                  onTap: () {},
-                ),
-                DrawerMenuItem(
-                  icon: Icons.settings,
-                  title: 'Settings',
-                  onTap: () {},
-                ),
-                const Divider(),
-                DrawerMenuItem(
-                  icon: Icons.logout,
-                  title: 'Logout',
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOptionCard({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.appWhiteColor,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.7),
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: AppColors.primaryColor,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
