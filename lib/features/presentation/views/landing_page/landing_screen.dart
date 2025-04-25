@@ -4,7 +4,7 @@ import '../../../../utils/app_strings.dart';
 import '../../../../utils/navigation_routes.dart';
 
 class LandingScreen extends StatelessWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+  const LandingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +22,28 @@ class LandingScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // App Logo
+                    // Replace Icon with Image
                     Container(
                       width: 150,
                       height: 150,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
+                        color: AppColors.appWhiteColor,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.3),
+                            color: AppColors.primaryColor.withValues(alpha: .3),
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.health_and_safety,
-                        size: 80,
-                        color: AppColors.appWhiteColor,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/sugarMateIcon.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 32),

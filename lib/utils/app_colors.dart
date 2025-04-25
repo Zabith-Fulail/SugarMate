@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color appWhiteColor = Color(0xFFFFFFFF); // Card/Surface
-  static const Color appBackgroundColor = Color(0xFFF8F9F9); // Light background
-  static const Color primaryColor = Color(0xFFC9FAFF); // Fresh green
-  static const Color primaryVariant = Color(0xFF388E3C); // Darker green for buttons/headers
-  static const Color secondaryColor = Color(0xFF00BCD4); // Teal accent
+  // Primary Color - Strong, visible blue
+  static const Color primaryColor = Color(0xFF0066CC); // Professional blue
+  // Alternative options if you want to try:
+  // static const Color primaryColor = Color(0xFF1976D2);  // Material blue
+  // static const Color primaryColor = Color(0xFF2563EB);  // Royal blue
+
+  // Background color - Very light blue
+  static const Color appBackgroundColor = Color(0xFFF1FDFF); // Very light blue background
+  static const Color surfaceBg = Color(0xffe0faff);
+  static const Color appWhiteColor = Color(0xFFFFFFFF); // Pure white
   static const Color appBlackColor = Color(0xFF2C3E50); // Dark text
   static const Color appGreyColor = Color(0xFF7F8C8D); // Medium grey
   static const Color appRedColor = Color(0xFFE74C3C); // Error red
-  static const Color successColor = Color(0xFF43A047); // Success/positive
+
+  // Additional Colors
+  static const Color whiteColor = Color(0xFFFFFFFF); // Pure white
+  static const Color blackColor = Color(0xFF2C3E50); // Dark text
+  static const Color greyColor = Color(0xFF7F8C8D); // Medium grey
+  static const Color redColor = Color(0xFFE74C3C); // Error red
+
+  static const Color primaryVariant =
+      Color(0xFF388E3C); // Darker green for buttons/headers
+  static const Color secondaryColor = Color(0xFF00BCD4); // Teal accent
   static const Color appListBoxColor =
       Color(0xFFE0E0E0); // Optional light grey for cards or dividers
 
   ///Colors
   // static const Color primaryColor = Color(0xff6728c5);
   static const Color darkBlue = Color(0xff084297);
-  static const Color whiteColor = Color(0xFFFFFFFF);
-  static const Color blackColor = Color(0xFF2C3E50);
   static const Color lightGrey = Color(0xffF7F7F9);
   static const Color bgColor = Color(0xffF8F9FC);
   static const Color darkGrey = Color(0xff707B81);
@@ -40,6 +52,7 @@ class AppColors {
   static const Color darkPurple = Color(0xff640295);
   static const Color yellow = Color(0xffFFCC00);
   static const Color darkPink = Color(0xffFF2D55);
+
 
   static const RadialGradient appBarGradient = RadialGradient(
     colors: [Color(0xff287efd), Color(0xff084297)],

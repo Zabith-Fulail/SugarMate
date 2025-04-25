@@ -78,7 +78,13 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: AppColors.appBackgroundColor,
       appBar: AppBar(
-        title: Text(AppStrings.signUp),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColors.appWhiteColor,
+        ),
+        title: Text(AppStrings.signUp, textAlign: TextAlign.center,),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.appWhiteColor,
       ),
@@ -92,7 +98,7 @@ class _SignupScreenState extends State<SignupScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.appWhiteColor,
+                  color: AppColors.surfaceBg,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -214,7 +220,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate() &&
@@ -235,10 +241,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     backgroundColor: AppColors.primaryColor,
                     foregroundColor: AppColors.appWhiteColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 2,
                   ),
-                  child: Text(AppStrings.signUp),
+                  child: Text(AppStrings.signUp,style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),),
                 ),
               ),
               TextButton(

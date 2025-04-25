@@ -48,7 +48,7 @@ flutter:
 
   assets:
     - assets/animations/lottie/
-#    - assets/images/png/
+    - assets/images/
 #    - assets/images/jpg/
 
 #  fonts:

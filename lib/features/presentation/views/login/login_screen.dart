@@ -62,7 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.appBackgroundColor,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(AppStrings.login),
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColors.appWhiteColor,
+        ),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.appWhiteColor,
       ),
@@ -100,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.appWhiteColor,
+                        color: AppColors.surfaceBg,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -166,15 +172,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Login Button
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 56,
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                           foregroundColor: AppColors.appWhiteColor,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                           ),
+                          elevation: 2,
                         ),
                         child: _isLoading
                             ? const SizedBox(
@@ -185,7 +192,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(AppStrings.login),
+                            : Text(AppStrings.login,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),),
                       ),
                     ),
                     // Sign Up Link

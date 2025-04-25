@@ -86,12 +86,12 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // App Logo
+                    // Replace Icon with Image
                     Container(
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
+                        color: AppColors.appWhiteColor,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -101,10 +101,13 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.health_and_safety,
-                        size: 60,
-                        color: AppColors.appWhiteColor,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/sugarMateIcon.png',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
