@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/views/home_view/widget/hamburger_menu.dart';
 import 'package:sugar_mate/features/presentation/views/home_view/widget/option_card.dart';
+import 'package:sugar_mate/utils/navigation_routes.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../widgets/carousel_item.dart';
@@ -56,9 +57,14 @@ class _HomeMainViewState extends State<HomeMainView> {
           CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.appWhiteColor,
-            child: Icon(
-              Icons.person,
-              color: AppColors.primaryColor,
+            child: InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, Routes.kProfileView);
+              },
+              child: Icon(
+                Icons.person,
+                color: AppColors.primaryColor,
+              ),
             ),
           ),
           const SizedBox(width: 16),
