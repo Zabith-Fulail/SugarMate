@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sugar_mate/features/presentation/views/signup/widget/terms_dialog.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_strings.dart';
 import '../../../../utils/navigation_routes.dart';
-import '../../widgets/app_text_field.dart';
 import '../../widgets/app_dropdown.dart';
+import '../../widgets/app_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -24,6 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   DateTime? _selectedDate;
   String? _selectedUserType;
+  bool _acceptedTerms = false;
 
   @override
   void dispose() {
@@ -84,7 +86,10 @@ class _SignupScreenState extends State<SignupScreen> {
           fontWeight: FontWeight.bold,
           color: AppColors.appWhiteColor,
         ),
-        title: Text(AppStrings.signUp, textAlign: TextAlign.center,),
+        title: Text(
+          AppStrings.signUp,
+          textAlign: TextAlign.center,
+        ),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.appWhiteColor,
       ),
@@ -217,14 +222,61 @@ class _SignupScreenState extends State<SignupScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: _acceptedTerms,
+                    onChanged: (value) {
+                      setState(() {
+                        _acceptedTerms = value ?? false;
+                      });
+                    },
+                    activeColor: AppColors.primaryColor,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _showTermsDialog,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'I accept the ',
+                          style: TextStyle(color: AppColors.appBlackColor),
+                          children: [
+                            TextSpan(
+                              text: 'Terms and Conditions',
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate() &&
-                        _selectedDate != null) {
+                    if (!_acceptedTerms) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please accept the Terms and Conditions.'),
+                          backgroundColor: AppColors.appRedColor,
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (_formKey.currentState!.validate() && _selectedDate != null) {
                       // TODO: Implement signup logic
                       Navigator.of(context)
                           .pushReplacementNamed(Routes.kSplashScreen);
@@ -237,6 +289,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       );
                     }
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                     foregroundColor: AppColors.appWhiteColor,
@@ -245,10 +298,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     elevation: 2,
                   ),
-                  child: Text(AppStrings.signUp,style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  child: Text(
+                    AppStrings.signUp,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
               TextButton(
@@ -266,4 +322,13 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
+  void _showTermsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return TermsDialog();
+      },
+    );
+  }
+
 }
