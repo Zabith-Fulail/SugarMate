@@ -5,8 +5,11 @@ import 'package:sugar_mate/features/presentation/views/login/login_screen.dart';
 import 'package:sugar_mate/features/presentation/views/signup/signup_screen.dart';
 import 'package:sugar_mate/features/presentation/views/splash_screen/splash_screen.dart';
 
+import '../features/presentation/views/doctors/data/doctor.dart';
+import '../features/presentation/views/doctors/doctor_details.dart';
 import '../features/presentation/views/doctors/doctors_view.dart';
 import '../features/presentation/views/profile_view/profile_view.dart';
+import '../features/presentation/views/settings/settings_view.dart';
 import 'app_colors.dart';
 import 'app_stylings.dart';
 
@@ -18,6 +21,8 @@ class Routes {
   static const String kHomeMainView = "kHomeMainView";
   static const String kDoctorsView = "kDoctorsView";
   static const String kProfileView = "kProfileView";
+  static const String kDoctorDetails = "kDoctorDetails";
+  static const String kSettingsView = "kSettingsView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -42,6 +47,14 @@ class Routes {
         break;
       case Routes.kProfileView:
         page = const ProfileView();
+        break;
+        case Routes.kSettingsView:
+        page = const SettingsView();
+        break;
+      case Routes.kDoctorDetails:
+        page = DoctorDetails(
+          doctor: settings.arguments as Doctor,
+        );
         break;
       default:
         page = Scaffold(
