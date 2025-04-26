@@ -51,7 +51,9 @@ class HamburgerMenu extends StatelessWidget {
                 DrawerMenuItem(
                   icon: Icons.settings,
                   title: 'Settings',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.kSettingsView);
+                  },
                 ),
                 const Divider(),
                 DrawerMenuItem(
