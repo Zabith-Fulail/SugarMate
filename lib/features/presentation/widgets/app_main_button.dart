@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../utils/app_colors.dart';
-import '../../../utils/app_stylings.dart';
+import '../../../utils/app_styling.dart';
 
 class AppMainButton extends StatefulWidget {
   GestureTapCallback? onTap;

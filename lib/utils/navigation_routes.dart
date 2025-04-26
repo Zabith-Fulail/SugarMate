@@ -12,7 +12,7 @@ import '../features/presentation/views/profile_view/profile_view.dart';
 import '../features/presentation/views/settings/settings_view.dart';
 import '../features/presentation/views/upload_receipt/upload_receipt_view.dart';
 import 'app_colors.dart';
-import 'app_stylings.dart';
+import 'app_styling.dart';
 
 class Routes {
   static const String kSplashScreen = "kSplashScreen";

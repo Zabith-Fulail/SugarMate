@@ -6,7 +6,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_images.dart';
-import '../../../utils/app_stylings.dart';
+import '../../../utils/app_styling.dart';
 import '../../../utils/app_spacing.dart';
 import 'app_main_button.dart';
 
