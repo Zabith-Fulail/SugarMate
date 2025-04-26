@@ -8,6 +8,7 @@ import 'package:sugar_mate/features/presentation/views/splash_screen/splash_scre
 import '../features/presentation/views/doctors/data/doctor.dart';
 import '../features/presentation/views/doctors/doctor_details.dart';
 import '../features/presentation/views/doctors/doctors_view.dart';
+import '../features/presentation/views/prediction/prediction_details_view.dart';
 import '../features/presentation/views/profile_view/profile_view.dart';
 import '../features/presentation/views/settings/settings_view.dart';
 import '../features/presentation/views/upload_receipt/upload_receipt_view.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const String kDoctorDetails = "kDoctorDetails";
   static const String kSettingsView = "kSettingsView";
   static const String kUploadReceiptView = "kUploadReceiptView";
+  static const String kPredictionView = "kPredictionView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -59,6 +61,9 @@ class Routes {
         );
       case Routes.kUploadReceiptView:
         page = UploadReceiptView();
+        break;
+      case Routes.kPredictionView:
+        page = PredictionDetailsView();
         break;
       default:
         page = Scaffold(

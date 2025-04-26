@@ -140,7 +140,7 @@ class _HomeMainViewState extends State<HomeMainView> {
                           icon: Icons.analytics,
                           title: 'Prediction',
                           onTap: () {
-                            // TODO: Navigate to prediction screen
+                            Navigator.pushNamed(context, Routes.kPredictionView);
                           },
                         ),
                       ),
