@@ -62,4 +62,8 @@ class AppStrings {
   static const String loginDescription =
       "Please login to continue managing your health journey";
   static const String forgotPassword = "Forgot Password?";
+  static const String doctors = "Doctors";
+  static const String profile = "Profile";
+  static const String firstName = "First Name";
+  static const String lastName = "Last Name";
 }
