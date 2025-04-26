@@ -5,17 +5,17 @@ import '../../../utils/app_colors.dart';
 import '../../../utils/app_styling.dart';
 
 class AppMainButton extends StatefulWidget {
-  GestureTapCallback? onTap;
-  String title;
-  Color? color;
-  TextStyle? titleStyle;
-  bool? isEnable;
-  bool? isNegative;
-  Widget? prefixIcon;
-  double? width;
-  double? borderRadius;
+  final GestureTapCallback? onTap;
+  final String title;
+  final Color? color;
+  final TextStyle? titleStyle;
+  final bool? isEnable;
+  final bool? isNegative;
+  final Widget? prefixIcon;
+  final double? width;
+  final double? borderRadius;
 
-  AppMainButton({
+  const AppMainButton({
     super.key,
     this.onTap,
     required this.title,
@@ -38,58 +38,55 @@ class _AppMainButtonState extends State<AppMainButton> {
     return SizedBox(
       width: widget.width,
       child: ElevatedButton(
-        style:
-            widget.isNegative!
-                ? ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.borderRadius ?? 60,
-                      ),
+        style: widget.isNegative!
+            ? ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      widget.borderRadius ?? 60,
                     ),
                   ),
-                  fixedSize: const WidgetStatePropertyAll(Size.infinite),
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(vertical: 1.7.h, horizontal: 16),
-                  ),
-                  splashFactory: InkRipple.splashFactory,
-                  overlayColor: WidgetStatePropertyAll(
-                    AppColors.darkGrey.withOpacity(0.15),
-                  ),
-                  backgroundColor:
-                      widget.isEnable!
-                          ? WidgetStatePropertyAll(
-                            AppColors.darkGrey.withOpacity(0.3),
-                          )
-                          : WidgetStatePropertyAll(
-                            AppColors.darkGrey.withOpacity(0.3),
-                          ),
-                  elevation: const WidgetStatePropertyAll(0),
-                )
-                : ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.borderRadius ?? 60,
-                      ),
-                    ),
-                  ),
-                  fixedSize: const WidgetStatePropertyAll(Size.infinite),
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(vertical: 1.7.h, horizontal: 16),
-                  ),
-                  splashFactory: InkRipple.splashFactory,
-                  overlayColor: WidgetStatePropertyAll(
-                    AppColors.whiteColor.withOpacity(0.15),
-                  ),
-                  backgroundColor:
-                      widget.isEnable!
-                          ? WidgetStatePropertyAll(widget.color)
-                          : WidgetStatePropertyAll(
-                            AppColors.darkGrey.withOpacity(0.3),
-                          ),
-                  elevation: const WidgetStatePropertyAll(0),
                 ),
+                fixedSize: const WidgetStatePropertyAll(Size.infinite),
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(vertical: 1.7.h, horizontal: 16),
+                ),
+                splashFactory: InkRipple.splashFactory,
+                overlayColor: WidgetStatePropertyAll(
+                  AppColors.darkGrey.withValues(alpha: 0.15),
+                ),
+                backgroundColor: widget.isEnable!
+                    ? WidgetStatePropertyAll(
+                        AppColors.darkGrey.withValues(alpha: 0.3),
+                      )
+                    : WidgetStatePropertyAll(
+                        AppColors.darkGrey.withValues(alpha: 0.3),
+                      ),
+                elevation: const WidgetStatePropertyAll(0),
+              )
+            : ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      widget.borderRadius ?? 60,
+                    ),
+                  ),
+                ),
+                fixedSize: const WidgetStatePropertyAll(Size.infinite),
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(vertical: 1.7.h, horizontal: 16),
+                ),
+                splashFactory: InkRipple.splashFactory,
+                overlayColor: WidgetStatePropertyAll(
+                  AppColors.whiteColor.withValues(alpha: 0.15),
+                ),
+                backgroundColor: widget.isEnable!
+                    ? WidgetStatePropertyAll(widget.color)
+                    : WidgetStatePropertyAll(
+                        AppColors.darkGrey.withValues(alpha: 0.3),
+                      ),
+                elevation: const WidgetStatePropertyAll(0),
+              ),
         onPressed: widget.isEnable! ? widget.onTap : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -100,12 +97,11 @@ class _AppMainButtonState extends State<AppMainButton> {
                 : const SizedBox(),
             Text(
               widget.title,
-              style:
-                  !widget.isNegative!
-                      ? widget.isEnable!
-                          ? widget.titleStyle ?? AppStyling.medium14White
-                          : AppStyling.medium14White
-                      : widget.titleStyle ?? AppStyling.medium14Black,
+              style: !widget.isNegative!
+                  ? widget.isEnable!
+                      ? widget.titleStyle ?? AppStyling.medium14White
+                      : AppStyling.medium14White
+                  : widget.titleStyle ?? AppStyling.medium14Black,
             ),
           ],
         ),

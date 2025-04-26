@@ -7,7 +7,8 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  @override
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -17,11 +18,10 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: Routes.generateRoute,
       initialRoute: Routes.kSplashScreen,
       debugShowCheckedModeBanner: true,
-      builder:
-          (context, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: null),
-            child: child!,
-          ),
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaler: null),
+        child: child!,
+      ),
       theme: ThemeData(
         canvasColor: AppColors.transparent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
         // backgroundColor: Colors.white,
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppColors.primaryColor,
-          selectionColor: AppColors.primaryColor.withOpacity(0.2),
+          selectionColor: AppColors.primaryColor.withValues(alpha: 0.2),
           selectionHandleColor: AppColors.primaryColor,
         ),
         bottomAppBarTheme: const BottomAppBarTheme(
