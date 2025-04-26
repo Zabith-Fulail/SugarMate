@@ -10,6 +10,7 @@ import '../features/presentation/views/doctors/doctor_details.dart';
 import '../features/presentation/views/doctors/doctors_view.dart';
 import '../features/presentation/views/profile_view/profile_view.dart';
 import '../features/presentation/views/settings/settings_view.dart';
+import '../features/presentation/views/upload_receipt/upload_receipt_view.dart';
 import 'app_colors.dart';
 import 'app_stylings.dart';
 
@@ -23,6 +24,7 @@ class Routes {
   static const String kProfileView = "kProfileView";
   static const String kDoctorDetails = "kDoctorDetails";
   static const String kSettingsView = "kSettingsView";
+  static const String kUploadReceiptView = "kUploadReceiptView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -48,13 +50,15 @@ class Routes {
       case Routes.kProfileView:
         page = const ProfileView();
         break;
-        case Routes.kSettingsView:
+      case Routes.kSettingsView:
         page = const SettingsView();
         break;
       case Routes.kDoctorDetails:
         page = DoctorDetails(
           doctor: settings.arguments as Doctor,
         );
+      case Routes.kUploadReceiptView:
+        page = UploadReceiptView();
         break;
       default:
         page = Scaffold(
