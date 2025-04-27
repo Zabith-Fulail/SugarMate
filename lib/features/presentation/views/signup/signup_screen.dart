@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sugar_mate/features/presentation/views/signup/widget/terms_dialog.dart';
@@ -265,7 +267,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (!_acceptedTerms) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -277,9 +279,72 @@ class _SignupScreenState extends State<SignupScreen> {
                     }
 
                     if (_formKey.currentState!.validate() && _selectedDate != null) {
-                      // TODO: Implement signup logic
-                      Navigator.of(context)
-                          .pushReplacementNamed(Routes.kSplashScreen);
+                      try {
+                        // Show loading spinner
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        );
+
+                        // Create user with email and password
+                        UserCredential userCredential = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
+                        );
+
+                        User? user = userCredential.user;
+
+                        if (user != null) {
+                          // Save additional user data to Firestore
+                          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+                            'uid': user.uid,
+                            'full_name': _nameController.text.trim(),
+                            'email': _emailController.text.trim(),
+                            'mobile_number': _mobileController.text.trim(),
+                            'date_of_birth': DateFormat('dd/MM/yyyy').format(_selectedDate!),
+                            'user_type': _selectedUserType,
+                            'created_at': FieldValue.serverTimestamp(),
+                          });
+
+                          Navigator.of(context).pop(); // Close the loading spinner
+
+                          // Navigate to SplashScreen or Home
+                          Navigator.of(context).pushReplacementNamed(Routes.kSplashScreen);
+                        }
+                      } on FirebaseAuthException catch (e) {
+                        Navigator.of(context).pop(); // Close the loading spinner
+
+                        String errorMessage = 'An error occurred. Please try again.';
+                        if (e.code == 'email-already-in-use') {
+                          errorMessage = 'Email is already registered.';
+                        } else if (e.code == 'invalid-email') {
+                          errorMessage = 'Invalid email address.';
+                        } else if (e.code == 'weak-password') {
+                          errorMessage = 'Password should be at least 6 characters.';
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(errorMessage),
+                            backgroundColor: AppColors.appRedColor,
+                          ),
+                        );
+                      } catch (e) {
+                        Navigator.of(context).pop(); // Close the loading spinner
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Unexpected error: $e'),
+                            backgroundColor: AppColors.appRedColor,
+                          ),
+                        );
+                      }
                     } else if (_selectedDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -289,6 +354,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       );
                     }
                   },
+
+
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,

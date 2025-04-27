@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672185699389",
+    "project_id": "sugarmate-a0b2d",
+    "storage_bucket": "sugarmate-a0b2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672185699389:android:1ebfc6637f7d4c8f51ae54",
+        "android_client_info": {
+          "package_name": "com.example.sugar_mate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1vYQMQvIGLwcyQWnDJDsXF47hx0Lc8iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
