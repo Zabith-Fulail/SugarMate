@@ -16,7 +16,8 @@ class HomeMainView extends StatefulWidget {
 
 class _HomeMainViewState extends State<HomeMainView> {
   int _currentCarouselIndex = 0;
-  final CarouselSliderController _carouselController = CarouselSliderController();
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   final List<Map<String, String>> carouselItems = [
     {
@@ -44,9 +45,7 @@ class _HomeMainViewState extends State<HomeMainView> {
         backgroundColor: AppColors.primaryColor,
         elevation: 0,
         title: const Text('Dashboard'),
-        iconTheme: IconThemeData(
-          color: AppColors.appWhiteColor
-        ),
+        iconTheme: IconThemeData(color: AppColors.appWhiteColor),
         centerTitle: true,
         titleTextStyle: const TextStyle(
           fontSize: 20,
@@ -58,7 +57,7 @@ class _HomeMainViewState extends State<HomeMainView> {
             radius: 20,
             backgroundColor: AppColors.appWhiteColor,
             child: InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pushNamed(context, Routes.kProfileView);
               },
               child: Icon(
@@ -111,8 +110,8 @@ class _HomeMainViewState extends State<HomeMainView> {
                   margin: const EdgeInsets.symmetric(horizontal: 4.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primaryColor.withValues(alpha:
-                      _currentCarouselIndex == entry.key ? 1.0 : 0.4,
+                    color: AppColors.primaryColor.withValues(
+                      alpha: _currentCarouselIndex == entry.key ? 1.0 : 0.4,
                     ),
                   ),
                 );
@@ -140,7 +139,8 @@ class _HomeMainViewState extends State<HomeMainView> {
                           icon: Icons.analytics,
                           title: 'Prediction',
                           onTap: () {
-                            Navigator.pushNamed(context, Routes.kPredictionView);
+                            Navigator.pushNamed(
+                                context, Routes.kPredictionView);
                           },
                         ),
                       ),
@@ -150,7 +150,8 @@ class _HomeMainViewState extends State<HomeMainView> {
                           icon: Icons.upload_file,
                           title: 'Upload Receipts',
                           onTap: () {
-                            Navigator.pushNamed(context, Routes.kUploadReceiptView);
+                            Navigator.pushNamed(
+                                context, Routes.kUploadReceiptView);
                           },
                         ),
                       ),
@@ -164,5 +165,4 @@ class _HomeMainViewState extends State<HomeMainView> {
       ),
     );
   }
-
 }
