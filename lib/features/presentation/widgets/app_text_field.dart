@@ -6,6 +6,7 @@ class AppTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
   final TextInputType keyboardType;
+  final TextInputAction textInputAction;
   final String? Function(String?)? validator;
   final Widget? suffixIcon;
   final bool readOnly;
@@ -17,6 +18,7 @@ class AppTextField extends StatelessWidget {
     required this.labelText,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.done,
     this.validator,
     this.suffixIcon,
     this.readOnly = false,
@@ -29,6 +31,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      textInputAction: textInputAction,
       validator: validator,
       readOnly: readOnly,
       onTap: onTap,
