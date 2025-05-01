@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/utils/app_colors.dart';
-import 'package:sugar_mate/utils/navigation.dart';
-import '../features/presentation/views/landing_page/landing_screen.dart';
-import '../features/presentation/views/login/login_screen.dart';
-import '../features/presentation/views/signup/signup_screen.dart';
-import '../features/presentation/views/splash_screen/splash_screen.dart';
+
 import '../utils/app_strings.dart';
+import '../utils/navigation_routes.dart';
 
 class SugarMateApp extends StatefulWidget {
   const SugarMateApp({super.key});
@@ -20,19 +17,13 @@ class _SugarMateAppState extends State<SugarMateApp> {
     return MaterialApp(
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
-      navigatorKey: NavigationService.navigatorKey,
       theme: ThemeData(
         primaryColor: AppColors.primaryColor,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      initialRoute: AppRoutes.splash,
-      routes: {
-        AppRoutes.splash: (context) => const SplashScreen(),
-        AppRoutes.login: (context) => const LoginScreen(),
-        AppRoutes.signup: (context) => const SignupScreen(),
-        AppRoutes.landing: (context) => const LandingScreen(),
-      },
+      initialRoute: Routes.kHomeMainView,
+      onGenerateRoute: Routes.generateRoute,
     );
   }
 }
