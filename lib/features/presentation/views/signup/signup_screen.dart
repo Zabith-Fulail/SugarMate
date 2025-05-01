@@ -80,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.appBackgroundColor,
+      backgroundColor: AppColors.appWhiteColor,
       appBar: AppBar(
         centerTitle: true,
         titleTextStyle: const TextStyle(
@@ -315,7 +315,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           Navigator.of(context).pop(); // Close the loading spinner
 
                           // Navigate to SplashScreen or Home
-                          Navigator.of(context).pushReplacementNamed(Routes.kSplashScreen);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            Routes.kHomeMainView,
+                                (route) => false,
+                          );
+
                         }
                       } on FirebaseAuthException catch (e) {
                         Navigator.of(context).pop(); // Close the loading spinner
