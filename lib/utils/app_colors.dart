@@ -9,7 +9,7 @@ class AppColors {
 
   // Background color - Very light blue
   static const Color appBackgroundColor = Color(0xFFF1FDFF); // Very light blue background
-  static const Color surfaceBg = Color(0xffe0faff);
+  static const Color surfaceBg = Color(0xFFF6F8FB);
   static const Color appWhiteColor = Color(0xFFFFFFFF); // Pure white
   static const Color appBlackColor = Color(0xFF2C3E50); // Dark text
   static const Color appGreyColor = Color(0xFF7F8C8D); // Medium grey
