@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../utils/app_colors.dart';
@@ -25,6 +26,37 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // Future<void> _handleLogin() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _isLoading = true;
+  //     });
+  //
+  //     try {
+  //       // Simulate login delay (replace with actual Firebase auth)
+  //       await Future.delayed(const Duration(seconds: 2));
+  //
+  //       if (mounted) {
+  //         Navigator.of(context).pushReplacementNamed(Routes.kHomeMainView);
+  //       }
+  //     } catch (e) {
+  //       if (mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(
+  //             content: Text(e.toString()),
+  //             backgroundColor: Colors.red,
+  //           ),
+  //         );
+  //       }
+  //     } finally {
+  //       if (mounted) {
+  //         setState(() {
+  //           _isLoading = false;
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -32,17 +64,45 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       try {
-        // Simulate login delay (replace with actual Firebase auth)
-        await Future.delayed(const Duration(seconds: 2));
+        // Firebase email/password login
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
         if (mounted) {
+          // Navigate to home
           Navigator.of(context).pushReplacementNamed(Routes.kHomeMainView);
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage;
+        switch (e.code) {
+          case 'invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+          case 'user-not-found':
+            errorMessage = 'No user found for that email.';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Incorrect password.';
+            break;
+          default:
+            errorMessage = 'Login failed. Please try again.';
+        }
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(e.toString()),
+              content: Text('Something went wrong.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -57,10 +117,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.appBackgroundColor,
+      backgroundColor: AppColors.appWhiteColor,
       appBar: AppBar(
         centerTitle: true,
         title: Text(AppStrings.login),
@@ -121,6 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           AppTextField(
+                            textInputAction: TextInputAction.next,
                             controller: _emailController,
                             labelText: AppStrings.email,
                             keyboardType: TextInputType.emailAddress,
@@ -133,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 16),
                           AppTextField(
+                            textInputAction: TextInputAction.done,
                             controller: _passwordController,
                             labelText: AppStrings.password,
                             obscureText: true,
@@ -192,11 +255,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(AppStrings.login,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),),
+                            : Text(
+                                AppStrings.login,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     // Sign Up Link

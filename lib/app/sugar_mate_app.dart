@@ -22,7 +22,7 @@ class _SugarMateAppState extends State<SugarMateApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      initialRoute: Routes.kHomeMainView,
+      initialRoute: Routes.kSplashScreen,
       onGenerateRoute: Routes.generateRoute,
     );
   }
