@@ -93,8 +93,9 @@ class _ProfileViewState extends State<ProfileView> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/default_profile.png'), // Change this to your default image
-                      backgroundColor: AppColors.surfaceBg,
+                      backgroundImage: AssetImage('assets/images/default_profile.png'),
+                      // Change this to your default image
+                      backgroundColor: AppColors.appWhiteColor,
                     ),
                     Positioned(
                       bottom: 0,
