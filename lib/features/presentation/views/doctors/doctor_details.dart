@@ -31,10 +31,29 @@ class DoctorDetails extends StatelessWidget {
         child: Column(
           children: [
             Hero(
-              tag: doctor.id,
+              tag: doctor.name,
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: NetworkImage(doctor.profileImageUrl),
+                backgroundColor: Colors.grey[200],
+                child: ClipOval(
+                  child: Image.network(
+                    doctor.image,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.person, size: 60);
+                    },
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -71,11 +90,11 @@ class DoctorDetails extends StatelessWidget {
                     const Text("About",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Text(
-                      doctor.description,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   doctor.description,
+                    //   style: const TextStyle(fontSize: 16),
+                    // ),
                     const Divider(height: 32),
                     Row(
                       children: [
@@ -90,7 +109,7 @@ class DoctorDetails extends StatelessWidget {
                       children: [
                         const Icon(Icons.phone, color: AppColors.primaryColor),
                         const SizedBox(width: 10),
-                        Text(doctor.phone,
+                        Text(doctor.mobile,
                             style: const TextStyle(fontSize: 16)),
                       ],
                     ),
