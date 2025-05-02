@@ -59,7 +59,9 @@ class HamburgerMenu extends StatelessWidget {
                 DrawerMenuItem(
                   icon: Icons.logout,
                   title: 'Logout',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(context, Routes.kLoginScreen, (route) => false);
+                  },
                 ),
               ],
             ),
