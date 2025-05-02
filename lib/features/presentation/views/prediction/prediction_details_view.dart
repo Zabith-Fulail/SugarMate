@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/widgets/app_text_field.dart';
 
+import '../../../../core/predictor/diabetes_predictor.dart';
 import '../../../../utils/app_colors.dart';
 
 class PredictionDetailsView extends StatefulWidget {
@@ -36,44 +37,23 @@ class _PredictionDetailsViewState extends State<PredictionDetailsView> {
   String? _predictionResult;
   bool _isLoading = false;
 
-  Future<void> _predict() async {
-    // Gather the feature values as a list
-    final inputData = [
-      _highBP ? 1 : 0,
-      _highChol ? 1 : 0,
-      26.0, // Replace with real data for BMI
-      _smoker ? 1 : 0,
-      _stroke ? 1 : 0,
-      _heartDisease ? 1 : 0,
-      _physActivity ? 1 : 0,
-      _fruits ? 1 : 0,
-      _veggies ? 1 : 0,
-      _alcohol ? 1 : 0,
-      _genHealth ? 1 : 0,
-      _mentHealth ? 1 : 0,
-      _physHealth ? 1 : 0,
-      _diffWalk ? 1 : 0,
-      _sex ? 1 : 0,
-      double.tryParse(_ageController.text),
-      double.tryParse(_educationController.text),
-      double.tryParse(_incomeController.text),
-    ];
 
-    setState(() {
-      _isLoading = true;
-      _predictionResult = null;
-    });
+  late DiabetesPredictor predictor;
+  bool _modelLoaded = false;
 
-    // Simulate an API call (replace with actual API call or TensorFlow Lite prediction)
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Simulating a positive prediction result for demonstration
-    setState(() {
-      _isLoading = false;
-      _predictionResult = "Prediction: Positive ✅"; // Example result
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadModel();
   }
 
+  Future<void> _loadModel() async {
+    predictor = DiabetesPredictor();
+    await predictor.loadModel();
+    setState(() {
+      _modelLoaded = true;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,16 +98,13 @@ class _PredictionDetailsViewState extends State<PredictionDetailsView> {
               const SizedBox(height: 24),
               AppTextField(controller: _incomeController, labelText: "Income"),
               const SizedBox(height: 24),
-              // _buildNumericInput("Age", _age, (val) => setState(() => _age = val)),
-              // _buildNumericInput("Education", _education, (val) => setState(() => _education = val)),
-              // _buildNumericInput("Income", _income, (val) => setState(() => _income = val)),
 
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _predict,
+                  onPressed: _isLoading ? null : _predict,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
@@ -182,22 +159,76 @@ class _PredictionDetailsViewState extends State<PredictionDetailsView> {
     );
   }
 
-  // Widget for numeric inputs (e.g., Age, Education, Income)
-  Widget _buildNumericInput(String label, int value, ValueChanged<int> onChanged) {
-    return Row(
-      children: [
-        Text(label),
-        Expanded(
-          child: TextField(
-            controller: TextEditingController(text: value.toString()),
-            onChanged: (val) => onChanged(int.parse(val)),
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
-      ],
-    );
+  Future<void> _predict() async {
+    if (!_modelLoaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Model not yet loaded. Please wait...")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _predictionResult = null;
+    });
+
+    // Raw input data
+    List<double> inputData = [
+      _highBP ? 1 : 0,
+      _highChol ? 1 : 0,
+      26.0, // Replace with actual BMI input if needed
+      _smoker ? 1 : 0,
+      _stroke ? 1 : 0,
+      _heartDisease ? 1 : 0,
+      _physActivity ? 1 : 0,
+      _fruits ? 1 : 0,
+      _veggies ? 1 : 0,
+      _alcohol ? 1 : 0,
+      _genHealth ? 1.0 : 0.0, // Adjust if you're modeling general health as categorical
+      _mentHealth ? 1.0 : 0.0,
+      _physHealth ? 1.0 : 0.0,
+      _diffWalk ? 1 : 0,
+      _sex ? 1 : 0,
+      double.tryParse(_ageController.text) ?? 0,
+      double.tryParse(_educationController.text) ?? 0,
+      double.tryParse(_incomeController.text) ?? 0,
+    ];
+
+    // List<double> inputData = [1, 1, 20, 0, 0, 1, 1, 1, 0, 0, 4, 0, 30, 1, 0, 13, 6, 5];
+
+    // Means and standard deviations (from your StandardScaler in Python)
+    List<double> means = [
+      0.56317083, 0.5247467, 29.88198681, 0.47537708, 0.0618358, 0.14687108,
+      0.70457801, 0.61386664, 0.78938341, 0.0435167, 2.83406716, 3.74139303,
+      5.77863243, 0.2510919, 0.45843722, 8.57676869, 4.92255053, 5.69925557
+    ];
+
+    List<double> stds = [
+      0.49599339, 0.49938723, 7.10240249, 0.49939334, 0.24085708, 0.35397735,
+      0.45623222, 0.48686178, 0.40774654, 0.20401715, 1.11181404, 8.1465422,
+      10.04141135, 0.43364128, 0.49826954, 2.85296793, 1.03047795, 2.17492644
+    ];
+
+    // Standard scaling function
+    List<double> standardScale(List<double> input, List<double> means, List<double> stds) {
+      return List.generate(input.length, (i) => (input[i] - means[i]) / stds[i]);
+    }
+
+    // Normalize the input
+    List<double> normalizedInput = standardScale(inputData, means, stds);
+
+    // Get prediction from TFLite model
+    double prediction = await predictor.predict(normalizedInput);
+
+    setState(() {
+      _isLoading = false;
+      _predictionResult = prediction > 0.5
+          ? "Prediction: Positive ✅"
+          : "Prediction: Negative ❌";
+      print('Prediction: $prediction');
+    });
   }
+
+
+
 }
