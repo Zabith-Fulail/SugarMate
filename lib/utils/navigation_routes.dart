@@ -11,7 +11,7 @@ import '../features/presentation/views/doctors/doctors_view.dart';
 import '../features/presentation/views/prediction/prediction_details_view.dart';
 import '../features/presentation/views/profile_view/profile_view.dart';
 import '../features/presentation/views/settings/settings_view.dart';
-import '../features/presentation/views/upload_receipt/upload_receipt_view.dart';
+import '../features/presentation/views/receipt/upload_receipt_view.dart';
 import 'app_colors.dart';
 import 'app_styling.dart';
 
