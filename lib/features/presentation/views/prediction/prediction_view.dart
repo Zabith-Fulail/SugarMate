@@ -28,12 +28,13 @@ class _PredictionViewState extends State<PredictionView> {
   int _physHealth = 0;
   final TextEditingController _bmiController = TextEditingController();
 
-
   // bool _genHealth = false;
   // bool _mentHealth = false;
   // bool _physHealth = false;
   bool _diffWalk = false;
-  bool _sex = false;
+
+  // bool _sex = false;
+  String _sex = 'Male'; // default
   int _education = 1;
   int _income = 1;
 
@@ -48,7 +49,6 @@ class _PredictionViewState extends State<PredictionView> {
   String? _predictionResult;
   bool _isLoading = false;
 
-
   late DiabetesPredictor predictor;
   bool _modelLoaded = false;
 
@@ -57,12 +57,12 @@ class _PredictionViewState extends State<PredictionView> {
     super.initState();
     _loadModel();
   }
+
   @override
   void dispose() {
     _bmiController.dispose();
     super.dispose();
   }
-
 
   Future<void> _loadModel() async {
     predictor = DiabetesPredictor();
@@ -71,6 +71,7 @@ class _PredictionViewState extends State<PredictionView> {
       _modelLoaded = true;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,17 +94,37 @@ class _PredictionViewState extends State<PredictionView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Toggle buttons for binary inputs (e.g., HighBP, HighChol, etc.)
-              _buildToggle("High BP", _highBP, (val) => setState(() => _highBP = val)),
-              _buildToggle("High Chol", _highChol, (val) => setState(() => _highChol = val)),
-              _buildToggle("Smoker", _smoker, (val) => setState(() => _smoker = val)),
-              _buildToggle("Stroke", _stroke, (val) => setState(() => _stroke = val)),
-              _buildToggle("Heart Disease or Attack", _heartDisease, (val) => setState(() => _heartDisease = val)),
-              _buildToggle("Physical Activity", _physActivity, (val) => setState(() => _physActivity = val)),
-              _buildToggle("Fruits Consumption", _fruits, (val) => setState(() => _fruits = val)),
-              _buildToggle("Veggies Consumption", _veggies, (val) => setState(() => _veggies = val)),
-              _buildToggle("Alcohol Consumption", _alcohol, (val) => setState(() => _alcohol = val)),
-              _buildToggle("Difficulty Walking", _diffWalk, (val) => setState(() => _diffWalk = val)),
-              _buildToggle("Sex", _sex, (val) => setState(() => _sex = val)), /// make it dropdown male or female
+              _buildToggle(
+                  "High BP", _highBP, (val) => setState(() => _highBP = val)),
+              _buildToggle("High Chol", _highChol,
+                  (val) => setState(() => _highChol = val)),
+              _buildToggle(
+                  "Smoker", _smoker, (val) => setState(() => _smoker = val)),
+              _buildToggle(
+                  "Stroke", _stroke, (val) => setState(() => _stroke = val)),
+              _buildToggle("Heart Disease or Attack", _heartDisease,
+                  (val) => setState(() => _heartDisease = val)),
+              _buildToggle("Physical Activity", _physActivity,
+                  (val) => setState(() => _physActivity = val)),
+              _buildToggle("Fruits Consumption", _fruits,
+                  (val) => setState(() => _fruits = val)),
+              _buildToggle("Veggies Consumption", _veggies,
+                  (val) => setState(() => _veggies = val)),
+              _buildToggle("Alcohol Consumption", _alcohol,
+                  (val) => setState(() => _alcohol = val)),
+              _buildToggle("Difficulty Walking", _diffWalk,
+                  (val) => setState(() => _diffWalk = val)),
+              // _buildToggle("Sex", _sex, (val) => setState(() => _sex = val)), /// make it dropdown male or female
+              AppDropdown<String>(
+                value: _sex,
+                labelText: "Sex",
+                items: const [
+                  DropdownMenuItem(value: 'Male', child: Text("Male")),
+                  DropdownMenuItem(value: 'Female', child: Text("Female")),
+                ],
+                onChanged: (val) => setState(() => _sex = val!),
+              ),
+              const SizedBox(height: 24),
               AppTextField(
                 controller: _bmiController,
                 labelText: "BMI",
@@ -131,7 +152,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "General Health (1-5)",
                 items: List.generate(
                   5,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index + 1,
                     child: Text('${index + 1}'),
                   ),
@@ -144,7 +165,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "Mental Health Days (1-30)",
                 items: List.generate(
                   31,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index,
                     child: Text('$index'),
                   ),
@@ -157,7 +178,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "Physical Health Days (1-30)",
                 items: List.generate(
                   31,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index,
                     child: Text('$index'),
                   ),
@@ -172,7 +193,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "Age",
                 items: List.generate(
                   120,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index + 1,
                     child: Text('${index + 1}'),
                   ),
@@ -189,7 +210,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "Education (1-10)",
                 items: List.generate(
                   10,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index + 1,
                     child: Text('${index + 1}'),
                   ),
@@ -202,7 +223,7 @@ class _PredictionViewState extends State<PredictionView> {
                 labelText: "Income (1-10)",
                 items: List.generate(
                   10,
-                      (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                     value: index + 1,
                     child: Text('${index + 1}'),
                   ),
@@ -267,7 +288,16 @@ class _PredictionViewState extends State<PredictionView> {
     return Row(
       children: [
         Expanded(child: Text(label)),
-        Switch(value: value, onChanged: onChanged),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          thumbColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              return AppColors.primaryColor;
+            },
+          ),
+          activeTrackColor: AppColors.primaryColor.withValues(alpha: 0.5),
+        )
       ],
     );
   }
@@ -285,53 +315,77 @@ class _PredictionViewState extends State<PredictionView> {
       _predictionResult = null;
     });
 
-    // Raw input data
-    // List<double> inputData = [
-    //   _highBP ? 1 : 0,
-    //   _highChol ? 1 : 0,
-    //   double.tryParse(_bmiController.text) ?? 0.0,
-    //   _smoker ? 1 : 0,
-    //   _stroke ? 1 : 0,
-    //   _heartDisease ? 1 : 0,
-    //   _physActivity ? 1 : 0,
-    //   _fruits ? 1 : 0,
-    //   _veggies ? 1 : 0,
-    //   _alcohol ? 1 : 0,
-    //   // _genHealth ? 1.0 : 0.0, // Adjust if you're modeling general health as categorical
-    //   // _mentHealth ? 1.0 : 0.0,
-    //   // _physHealth ? 1.0 : 0.0,
-    //   _genHealth.toDouble(),
-    //   _mentHealth.toDouble(),
-    //   _physHealth.toDouble(),
-    //   _diffWalk ? 1 : 0,
-    //   _sex ? 1 : 0,
-    //   // double.tryParse(_ageController.text) ?? 0,
-    //   _age.toDouble(),
-    //   // double.tryParse(_educationController.text) ?? 0,
-    //   // double.tryParse(_incomeController.text) ?? 0,
-    //   _education.toDouble(),
-    //   _income.toDouble(),
-    //
-    // ];
+    List<double> inputData = [
+      _highBP ? 1 : 0,
+      _highChol ? 1 : 0,
+      double.tryParse(_bmiController.text) ?? 0.0,
+      _smoker ? 1 : 0,
+      _stroke ? 1 : 0,
+      _heartDisease ? 1 : 0,
+      _physActivity ? 1 : 0,
+      _fruits ? 1 : 0,
+      _veggies ? 1 : 0,
+      _alcohol ? 1 : 0,
+      _genHealth.toDouble(),
+      _mentHealth.toDouble(),
+      _physHealth.toDouble(),
+      _diffWalk ? 1 : 0,
+      _sex == 'Male' ? 1.0 : 0.0, // <-- updated
+      _age.toDouble(),
+      _education.toDouble(),
+      _income.toDouble(),
+    ];
 
-    List<double> inputData = [0, 1, 26, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 13, 5, 6];
+    // List<double> inputData = [0, 1, 26, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 13, 5, 6];
 
     // Means and standard deviations (from your StandardScaler in Python)
     List<double> means = [
-      0.56317083, 0.5247467, 29.88198681, 0.47537708, 0.0618358, 0.14687108,
-      0.70457801, 0.61386664, 0.78938341, 0.0435167, 2.83406716, 3.74139303,
-      5.77863243, 0.2510919, 0.45843722, 8.57676869, 4.92255053, 5.69925557
+      0.56317083,
+      0.5247467,
+      29.88198681,
+      0.47537708,
+      0.0618358,
+      0.14687108,
+      0.70457801,
+      0.61386664,
+      0.78938341,
+      0.0435167,
+      2.83406716,
+      3.74139303,
+      5.77863243,
+      0.2510919,
+      0.45843722,
+      8.57676869,
+      4.92255053,
+      5.69925557
     ];
 
     List<double> stds = [
-      0.49599339, 0.49938723, 7.10240249, 0.49939334, 0.24085708, 0.35397735,
-      0.45623222, 0.48686178, 0.40774654, 0.20401715, 1.11181404, 8.1465422,
-      10.04141135, 0.43364128, 0.49826954, 2.85296793, 1.03047795, 2.17492644
+      0.49599339,
+      0.49938723,
+      7.10240249,
+      0.49939334,
+      0.24085708,
+      0.35397735,
+      0.45623222,
+      0.48686178,
+      0.40774654,
+      0.20401715,
+      1.11181404,
+      8.1465422,
+      10.04141135,
+      0.43364128,
+      0.49826954,
+      2.85296793,
+      1.03047795,
+      2.17492644
     ];
 
     // Standard scaling function
-    List<double> standardScale(List<double> input, List<double> means, List<double> stds) {
-      return List.generate(input.length, (i) => (input[i] - means[i]) / stds[i]);
+    List<double> standardScale(
+        List<double> input, List<double> means, List<double> stds) {
+      return List.generate(
+          input.length, (i) => (input[i] - means[i]) / stds[i]);
     }
 
     // Normalize the input
@@ -342,14 +396,12 @@ class _PredictionViewState extends State<PredictionView> {
 
     setState(() {
       _isLoading = false;
-      _predictionResult = prediction < 1
-          ? "Prediction: Positive ✅"
-          : "Prediction: Negative ❌";
+      _predictionResult =
+          prediction < 1 ? "Prediction: Positive ✅" : "Prediction: Negative ❌";
     });
     print(inputData[2]);
     print(prediction);
     print(_predictionResult);
-
 
 // Show dialog after prediction is available
     showDialog(
@@ -358,7 +410,8 @@ class _PredictionViewState extends State<PredictionView> {
         final isPositive = prediction < 0.5;
 
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           titlePadding: const EdgeInsets.all(0),
           contentPadding: const EdgeInsets.all(16),
           title: Container(
@@ -373,7 +426,9 @@ class _PredictionViewState extends State<PredictionView> {
             child: Row(
               children: [
                 Icon(
-                  isPositive ? Icons.warning_rounded : Icons.check_circle_rounded,
+                  isPositive
+                      ? Icons.warning_rounded
+                      : Icons.check_circle_rounded,
                   color: isPositive ? Colors.red : Colors.green,
                   size: 30,
                 ),
@@ -383,7 +438,9 @@ class _PredictionViewState extends State<PredictionView> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isPositive ? Colors.red.shade900 : Colors.green.shade900,
+                    color: isPositive
+                        ? Colors.red.shade900
+                        : Colors.green.shade900,
                   ),
                 ),
               ],
@@ -404,10 +461,5 @@ class _PredictionViewState extends State<PredictionView> {
         );
       },
     );
-
-
   }
-
-
-
 }
