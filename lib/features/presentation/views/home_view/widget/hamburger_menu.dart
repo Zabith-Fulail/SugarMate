@@ -41,12 +41,16 @@ class HamburgerMenu extends StatelessWidget {
                 DrawerMenuItem(
                   icon: Icons.receipt_long,
                   title: 'Previous Receipts',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.kReceiptHistoryView);
+                  },
                 ),
                 DrawerMenuItem(
                   icon: Icons.history,
                   title: 'Prediction History',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.kPredictionHistoryView);
+                  },
                 ),
                 DrawerMenuItem(
                   icon: Icons.settings,
