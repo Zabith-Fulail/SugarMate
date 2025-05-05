@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/widgets/app_text_field.dart';
+import 'package:sugar_mate/utils/navigation_routes.dart';
 
 import '../../../../core/predictor/diabetes_predictor.dart';
 import '../../../../utils/app_colors.dart';
@@ -13,7 +14,7 @@ class PredictionView extends StatefulWidget {
 }
 
 class _PredictionViewState extends State<PredictionView> {
-  // Declare variables for each feature with initial values (false = 0, true = 1)
+  final _formKey = GlobalKey<FormState>();
   bool _highBP = false;
   bool _highChol = false;
   bool _smoker = false;
@@ -23,29 +24,17 @@ class _PredictionViewState extends State<PredictionView> {
   bool _fruits = false;
   bool _veggies = false;
   bool _alcohol = false;
-  int _genHealth = 3;
-  int _mentHealth = 0;
-  int _physHealth = 0;
+  int? _genHealth;
+  int? _mentHealth;
+  int? _physHealth;
   final TextEditingController _bmiController = TextEditingController();
 
-  // bool _genHealth = false;
-  // bool _mentHealth = false;
-  // bool _physHealth = false;
   bool _diffWalk = false;
 
-  // bool _sex = false;
-  String _sex = 'Male'; // default
-  int _education = 1;
-  int _income = 1;
-
-  // int _age = 0;  // Age as an integer (e.g., 25)
-  // int _education = 0;  // Education level (can be treated as a numeric scale)
-  // int _income = 0;  // Income as a numeric value (e.g., 1 for low, 2 for medium, 3 for high)
-
-  // TextEditingController _ageController = TextEditingController();
-  int _age = 25; // default age
-  // TextEditingController _educationController = TextEditingController();
-  // TextEditingController _incomeController = TextEditingController();
+  String? _sex;
+  int? _education;
+  int? _income;
+  int? _age;
   String? _predictionResult;
   bool _isLoading = false;
 
@@ -87,197 +76,234 @@ class _PredictionViewState extends State<PredictionView> {
           color: AppColors.appWhiteColor,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Toggle buttons for binary inputs (e.g., HighBP, HighChol, etc.)
-              _buildToggle(
-                  "High BP", _highBP, (val) => setState(() => _highBP = val)),
-              _buildToggle("High Chol", _highChol,
-                  (val) => setState(() => _highChol = val)),
-              _buildToggle(
-                  "Smoker", _smoker, (val) => setState(() => _smoker = val)),
-              _buildToggle(
-                  "Stroke", _stroke, (val) => setState(() => _stroke = val)),
-              _buildToggle("Heart Disease or Attack", _heartDisease,
-                  (val) => setState(() => _heartDisease = val)),
-              _buildToggle("Physical Activity", _physActivity,
-                  (val) => setState(() => _physActivity = val)),
-              _buildToggle("Fruits Consumption", _fruits,
-                  (val) => setState(() => _fruits = val)),
-              _buildToggle("Veggies Consumption", _veggies,
-                  (val) => setState(() => _veggies = val)),
-              _buildToggle("Alcohol Consumption", _alcohol,
-                  (val) => setState(() => _alcohol = val)),
-              _buildToggle("Difficulty Walking", _diffWalk,
-                  (val) => setState(() => _diffWalk = val)),
-              // _buildToggle("Sex", _sex, (val) => setState(() => _sex = val)), /// make it dropdown male or female
-              AppDropdown<String>(
-                value: _sex,
-                labelText: "Sex",
-                items: const [
-                  DropdownMenuItem(value: 'Male', child: Text("Male")),
-                  DropdownMenuItem(value: 'Female', child: Text("Female")),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildToggle(
+                          "High BP", _highBP, (val) => setState(() => _highBP = val)),
+                      _buildToggle("High Chol", _highChol,
+                          (val) => setState(() => _highChol = val)),
+                      _buildToggle(
+                          "Smoker", _smoker, (val) => setState(() => _smoker = val)),
+                      _buildToggle(
+                          "Stroke", _stroke, (val) => setState(() => _stroke = val)),
+                      _buildToggle("Heart Disease or Attack", _heartDisease,
+                          (val) => setState(() => _heartDisease = val)),
+                      _buildToggle("Physical Activity", _physActivity,
+                          (val) => setState(() => _physActivity = val)),
+                      _buildToggle("Fruits Consumption", _fruits,
+                          (val) => setState(() => _fruits = val)),
+                      _buildToggle("Veggies Consumption", _veggies,
+                          (val) => setState(() => _veggies = val)),
+                      _buildToggle("Alcohol Consumption", _alcohol,
+                          (val) => setState(() => _alcohol = val)),
+                      _buildToggle("Difficulty Walking", _diffWalk,
+                          (val) => setState(() => _diffWalk = val)),
+                      SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        value: _sex,
+                        validator: (val){
+                          if(val == null){
+                            return "Gender Required";
+                          }
+                          return null;
+                        },
+                        labelText: "Gender",
+                        items: const [
+                          DropdownMenuItem(value: 'Male', child: Text("Male")),
+                          DropdownMenuItem(value: 'Female', child: Text("Female")),
+                        ],
+                        onChanged: (val) => setState(() => _sex = val!),
+                      ),
+                      const SizedBox(height: 24),
+                      AppTextField(
+                        controller: _bmiController,
+                        keyboardType: TextInputType.number,
+                        labelText: "BMI",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'BMI is required';
+                          }
+                          final bmi = double.tryParse(value);
+                          if (bmi == null) {
+                            return 'Please enter a valid number';
+                          }
+                          if (bmi < 10 || bmi > 100) {
+                            return 'BMI should be between 10 and 100';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 24),
+                      AppDropdown<int>(
+                        value: _genHealth,
+                        validator: (value){
+                          if(value == null){
+                            return "General Health Required";
+                          }
+                          return null;
+                        },
+                        labelText: "General Health (1-5)",
+                        items: List.generate(
+                          5,
+                          (index) => DropdownMenuItem(
+                            value: index + 1,
+                            child: Text('${index + 1}'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _genHealth = val!),
+                      ),
+                      const SizedBox(height: 16),
+                      AppDropdown<int>(
+                        value: _mentHealth,
+                        labelText: "Mental Health Days (1-30)",
+                        validator: (value){
+                          if(value == null){
+                            return "Mental Health Required";
+                          }
+                          return null;
+                        },
+                        items: List.generate(
+                          31,
+                          (index) => DropdownMenuItem(
+                            value: index,
+                            child: Text('$index'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _mentHealth = val!),
+                      ),
+                      const SizedBox(height: 16),
+                      AppDropdown<int>(
+                        value: _physHealth,
+                        validator: (value){
+                          if(value == null){
+                            return "Physical Health Required";
+                          }
+                          return null;
+                        },
+                        labelText: "Physical Health Days (1-30)",
+                        items: List.generate(
+                          31,
+                          (index) => DropdownMenuItem(
+                            value: index,
+                            child: Text('$index'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _physHealth = val!),
+                      ),
+                      const SizedBox(height: 16),
+                      AppDropdown<int>(
+                        value: _age,
+                        validator: (value){
+                          if(value == null){
+                            return "Age Required";
+                          }
+                          return null;
+                        },
+                        labelText: "Age",
+                        items: List.generate(
+                          120,
+                          (index) => DropdownMenuItem(
+                            value: index + 1,
+                            child: Text('${index + 1}'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _age = val!),
+                      ),
+
+                      const SizedBox(height: 24),
+                      AppDropdown<int>(
+                        value: _education,
+                        labelText: "Education (1-10)",
+                        validator: (value){
+                          if(value == null){
+                            return "Education Health Required";
+                          }
+                          return null;
+                        },
+                        items: List.generate(
+                          10,
+                          (index) => DropdownMenuItem(
+                            value: index + 1,
+                            child: Text('${index + 1}'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _education = val!),
+                      ),
+                      const SizedBox(height: 24),
+                      AppDropdown<int>(
+                        value: _income,
+                        validator: (value){
+                          if(value == null){
+                            return "Income Health Required";
+                          }
+                          return null;
+                        },
+                        labelText: "Income (1-10)",
+                        items: List.generate(
+                          10,
+                          (index) => DropdownMenuItem(
+                            value: index + 1,
+                            child: Text('${index + 1}'),
+                          ),
+                        ),
+                        onChanged: (val) => setState(() => _income = val!),
+                      ),
+                      const SizedBox(height: 24),
+                      const SizedBox(height: 24),
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        if (_formKey.currentState!.validate()) {
+                          _predict();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Predict",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.appWhiteColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                 ],
-                onChanged: (val) => setState(() => _sex = val!),
               ),
-              const SizedBox(height: 24),
-              AppTextField(
-                controller: _bmiController,
-                labelText: "BMI",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'BMI is required';
-                  }
-                  final bmi = double.tryParse(value);
-                  if (bmi == null) {
-                    return 'Please enter a valid number';
-                  }
-                  if (bmi < 10 || bmi > 100) {
-                    return 'BMI should be between 10 and 100';
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 24),
-              // _buildToggle("Good General Health", _genHealth, (val) => setState(() => _genHealth = val)), /// todo make it as a dropdown 1- 5 rate
-              // _buildToggle("Mental Health", _mentHealth, (val) => setState(() => _mentHealth = val)), /// todo make it as a dropdown 1- 5 rate
-              // _buildToggle("Physical Health", _physHealth, (val) => setState(() => _physHealth = val)), /// todo make it as a dropdown 1- 5 rate
-              AppDropdown<int>(
-                value: _genHealth,
-                labelText: "General Health (1-5)",
-                items: List.generate(
-                  5,
-                  (index) => DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1}'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _genHealth = val!),
-              ),
-              const SizedBox(height: 16),
-              AppDropdown<int>(
-                value: _mentHealth,
-                labelText: "Mental Health Days (1-30)",
-                items: List.generate(
-                  31,
-                  (index) => DropdownMenuItem(
-                    value: index,
-                    child: Text('$index'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _mentHealth = val!),
-              ),
-              const SizedBox(height: 16),
-              AppDropdown<int>(
-                value: _physHealth,
-                labelText: "Physical Health Days (1-30)",
-                items: List.generate(
-                  31,
-                  (index) => DropdownMenuItem(
-                    value: index,
-                    child: Text('$index'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _physHealth = val!),
-              ),
-              const SizedBox(height: 16),
-              // Numeric inputs for age, education, and income
-              // AppTextField(controller: _ageController, labelText: "Age"), /// todo make it as a dropdown 1 - 120 rate
-              AppDropdown<int>(
-                value: _age,
-                labelText: "Age",
-                items: List.generate(
-                  120,
-                  (index) => DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1}'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _age = val!),
-              ),
-
-              const SizedBox(height: 24),
-              // AppTextField(controller: _educationController, labelText: "Education"), /// todo make it as a dropdown 1 - 10 rate
-              // const SizedBox(height: 24),
-              // AppTextField(controller: _incomeController, labelText: "Income"), /// todo make it as a dropdown 1 - 10 rate
-              AppDropdown<int>(
-                value: _education,
-                labelText: "Education (1-10)",
-                items: List.generate(
-                  10,
-                  (index) => DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1}'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _education = val!),
-              ),
-              const SizedBox(height: 24),
-              AppDropdown<int>(
-                value: _income,
-                labelText: "Income (1-10)",
-                items: List.generate(
-                  10,
-                  (index) => DropdownMenuItem(
-                    value: index + 1,
-                    child: Text('${index + 1}'),
-                  ),
-                ),
-                onChanged: (val) => setState(() => _income = val!),
-              ),
-
-              const SizedBox(height: 24),
-
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _predict,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    "Predict",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppColors.appWhiteColor,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              if (_isLoading) const CircularProgressIndicator(),
-              if (_predictionResult != null)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.only(top: 20),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    _predictionResult!,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
@@ -326,14 +352,14 @@ class _PredictionViewState extends State<PredictionView> {
       _fruits ? 1 : 0,
       _veggies ? 1 : 0,
       _alcohol ? 1 : 0,
-      _genHealth.toDouble(),
-      _mentHealth.toDouble(),
-      _physHealth.toDouble(),
+      _genHealth!.toDouble(),
+      _mentHealth!.toDouble(),
+      _physHealth!.toDouble(),
       _diffWalk ? 1 : 0,
-      _sex == 'Male' ? 1.0 : 0.0, // <-- updated
-      _age.toDouble(),
-      _education.toDouble(),
-      _income.toDouble(),
+      _sex == 'Male' ? 1.0 : 0.0,
+      _age!.toDouble(),
+      _education!.toDouble(),
+      _income!.toDouble(),
     ];
 
     // List<double> inputData = [0, 1, 26, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 13, 5, 6];
@@ -407,7 +433,7 @@ class _PredictionViewState extends State<PredictionView> {
     showDialog(
       context: context,
       builder: (context) {
-        final isPositive = prediction < 0.5;
+        final isPositive = prediction > 0.5;
 
         return AlertDialog(
           shape:
@@ -453,10 +479,97 @@ class _PredictionViewState extends State<PredictionView> {
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
+            if (!isPositive)
+              InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    height: 60,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: isPositive
+                          ? Colors.red.shade100
+                          : Colors.green.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Ok",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isPositive
+                              ? Colors.red.shade900
+                              : Colors.green.shade900,
+                        ),
+                      ),
+                    ),
+                  )),
+            if (isPositive)
+              Row(
+                children: [
+                  InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        height: 60,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: isPositive
+                              ? Colors.red.shade100
+                              : Colors.green.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Ok",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: isPositive
+                                  ? Colors.red.shade900
+                                  : Colors.green.shade900,
+                            ),
+                          ),
+                        ),
+                      )),
+                  if (isPositive)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 32.0),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.pushNamed(context, Routes.kDoctorsView);
+                            },
+                            child: Container(
+                              height: 60,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Consult",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red.shade900,
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ),
+                    ),
+                ],
+              ),
+
+            // TextButton(
+            //   onPressed: () => Navigator.of(context).pop(),
+            //   child: const Text('OK'),
+            // ),
           ],
         );
       },
