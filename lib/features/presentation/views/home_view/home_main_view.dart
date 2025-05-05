@@ -157,6 +157,33 @@ class _HomeMainViewState extends State<HomeMainView> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  Row(
+
+                    children: [
+                      Expanded(
+                        child: OptionCard(
+                          icon: Icons.medical_information,
+                          title: 'Medicine',
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, Routes.kMedicineSearchView);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: OptionCard(
+                          icon: Icons.calculate,
+                          title: 'BMI',
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, Routes.kBMICalculator);
+                          },
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
