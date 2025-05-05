@@ -58,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //   }
   // }
   Future<void> _handleLogin() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
