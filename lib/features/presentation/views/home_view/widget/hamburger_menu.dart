@@ -1,11 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/utils/navigation_routes.dart';
 
 import '../../../../../utils/app_colors.dart';
 import '../../../widgets/drawer_menu_item.dart';
 
-class HamburgerMenu extends StatelessWidget {
+class HamburgerMenu extends StatefulWidget {
   const HamburgerMenu({super.key});
+
+  @override
+  State<HamburgerMenu> createState() => _HamburgerMenuState();
+}
+
+class _HamburgerMenuState extends State<HamburgerMenu> {
+  String? fullName;
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      setState(() {
+        email = user.email;
+        fullName = doc.data()?['fullName'] ?? 'No Name';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +55,8 @@ class HamburgerMenu extends StatelessWidget {
                 size: 40,
               ),
             ),
-            accountName: const Text('John Doe'),
-            accountEmail: const Text('john.doe@example.com'),
+            accountName: Text(fullName ?? ""),
+            accountEmail: Text(email ?? ""),
           ),
           Expanded(
             child: ListView(

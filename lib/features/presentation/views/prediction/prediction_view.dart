@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/widgets/app_text_field.dart';
 import 'package:sugar_mate/utils/navigation_routes.dart';
@@ -15,21 +17,21 @@ class PredictionView extends StatefulWidget {
 
 class _PredictionViewState extends State<PredictionView> {
   final _formKey = GlobalKey<FormState>();
-  bool _highBP = false;
-  bool _highChol = false;
-  bool _smoker = false;
-  bool _stroke = false;
-  bool _heartDisease = false;
-  bool _physActivity = false;
-  bool _fruits = false;
-  bool _veggies = false;
-  bool _alcohol = false;
+  String? _highBP;
+  String? _highChol;
+  String? _smoker;
+  String? _stroke;
+  String? _heartDisease ;
+  String? _physActivity ;
+  String? _fruits ;
+  String? _veggies ;
+  String? _alcohol ;
   int? _genHealth;
   int? _mentHealth;
   int? _physHealth;
   final TextEditingController _bmiController = TextEditingController();
-
-  bool _diffWalk = false;
+  final User? user = FirebaseAuth.instance.currentUser;
+  String? _diffWalk ;
 
   String? _sex;
   int? _education;
@@ -61,6 +63,46 @@ class _PredictionViewState extends State<PredictionView> {
     });
   }
 
+
+  Future<void> uploadPredictionResult(String userId, String predictionLabel) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final CollectionReference predictionCollection =
+    firestore.collection('predictions');
+
+    try {
+      final timestamp = Timestamp.now();
+
+      await predictionCollection// Collection name
+          .add({
+        'prediction': predictionLabel,
+        'userId': userId,
+        'age': _age,
+        'education': _education,
+        'income': _income,
+        'highBP': _highBP,
+        'highChol': _highChol,
+        'smoker': _smoker,
+        'stroke': _stroke,
+        'heartDisease': _heartDisease,
+        'physActivity': _physActivity,
+        'fruits': _fruits,
+        'veggies': _veggies,
+        'alcohol': _alcohol,
+        'genHealth': _genHealth,
+        'mentHealth': _mentHealth,
+        'physHealth': _physHealth,
+        'diffWalk': _diffWalk,
+        'sex': _sex,
+        'predictionResult': _predictionResult,
+        'timestamp': timestamp,
+      });
+
+      print('Prediction uploaded successfully!');
+    } catch (e) {
+      print('Error uploading prediction: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,26 +130,180 @@ class _PredictionViewState extends State<PredictionView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildToggle(
-                          "High BP", _highBP, (val) => setState(() => _highBP = val)),
-                      _buildToggle("High Chol", _highChol,
-                          (val) => setState(() => _highChol = val)),
-                      _buildToggle(
-                          "Smoker", _smoker, (val) => setState(() => _smoker = val)),
-                      _buildToggle(
-                          "Stroke", _stroke, (val) => setState(() => _stroke = val)),
-                      _buildToggle("Heart Disease or Attack", _heartDisease,
-                          (val) => setState(() => _heartDisease = val)),
-                      _buildToggle("Physical Activity", _physActivity,
-                          (val) => setState(() => _physActivity = val)),
-                      _buildToggle("Fruits Consumption", _fruits,
-                          (val) => setState(() => _fruits = val)),
-                      _buildToggle("Veggies Consumption", _veggies,
-                          (val) => setState(() => _veggies = val)),
-                      _buildToggle("Alcohol Consumption", _alcohol,
-                          (val) => setState(() => _alcohol = val)),
-                      _buildToggle("Difficulty Walking", _diffWalk,
-                          (val) => setState(() => _diffWalk = val)),
+                      AppDropdown<String>(
+                        labelText: "High BP",
+                        value: _highBP,
+                        onChanged: (val) => setState(() => _highBP = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_highBP == null){
+                            return "Select Bp level";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        value: _highChol,
+                        labelText: "High Chol",
+                        onChanged: (val) => setState(() => _highChol = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_highChol == null){
+                            return "Select High Chol";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        labelText: "Smoker",
+                        value: _smoker,
+                        onChanged: (val) => setState(() => _smoker = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_smoker == null){
+                            return "Select Smoker";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        labelText: "Stroke",
+                        value: _stroke,
+                        onChanged: (val) => setState(() => _stroke = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_stroke == null){
+                            return "Select Stroke";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        labelText: "Heart Disease or Attack",
+                        value: _heartDisease,
+                        onChanged: (val) => setState(() => _heartDisease = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_heartDisease == null){
+                            return "Select Heart Disease or Attack";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        labelText: "Physical Activity",
+                        value: _physActivity,
+                        onChanged: (val) => setState(() => _physActivity = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_physActivity == null){
+                            return "Select Bp level";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        value: _fruits,
+                        labelText: "Fruits Consumption",
+                        onChanged: (val) => setState(() => _fruits = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_fruits == null){
+                            return "Select Fruits Consumption";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        value: _veggies,
+                        labelText: "Veggies Consumption",
+                        onChanged: (val) => setState(() => _veggies = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_veggies == null){
+                            return "Select Veggies Consumption";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        labelText: "Alcohol Consumption",
+                        value: _alcohol,
+                        onChanged: (val) => setState(() => _alcohol = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_alcohol == null){
+                            return "Select Alcohol Consumption";
+                          }
+                          return null;
+                        },
+                      ),SizedBox(height: 16,),
+                      AppDropdown<String>(
+                        value: _diffWalk,
+                        labelText: "Difficulty Walking",
+                        onChanged: (val) => setState(() => _diffWalk = val!),
+                        items: [
+                          DropdownMenuItem(value: 'Yes', child: Text("Yes")),
+                          DropdownMenuItem(value: 'No', child: Text("No")),
+                        ],
+                        validator: (value){
+                          if(_diffWalk == null){
+                            return "Select Difficulty Walking";
+                          }
+                          return null;
+                        },
+                      ),
+
+
+
+
+                      // _buildToggle(
+                      //     "High BP", _highBP, (val) => setState(() => _highBP = val)),
+                      // _buildToggle("High Chol", _highChol,
+                      //     (val) => setState(() => _highChol = val)),
+                      // _buildToggle(
+                      //     "Smoker", _smoker, (val) => setState(() => _smoker = val)),
+                      // _buildToggle(
+                      //     "Stroke", _stroke, (val) => setState(() => _stroke = val)),
+                      // _buildToggle("Heart Disease or Attack", _heartDisease,
+                      //     (val) => setState(() => _heartDisease = val)),
+                      // _buildToggle("Physical Activity", _physActivity,
+                      //     (val) => setState(() => _physActivity = val)),
+                      // _buildToggle("Fruits Consumption", _fruits,
+                      //     (val) => setState(() => _fruits = val)),
+                      // _buildToggle("Veggies Consumption", _veggies,
+                      //     (val) => setState(() => _veggies = val)),
+                      // _buildToggle("Alcohol Consumption", _alcohol,
+                      //     (val) => setState(() => _alcohol = val)),
+                      // _buildToggle("Difficulty Walking", _diffWalk,
+                      //     (val) => setState(() => _diffWalk = val)),
                       SizedBox(height: 16,),
                       AppDropdown<String>(
                         value: _sex,
@@ -309,24 +505,6 @@ class _PredictionViewState extends State<PredictionView> {
     );
   }
 
-  // Widget for toggle switch (true/false values)
-  Widget _buildToggle(String label, bool value, ValueChanged<bool> onChanged) {
-    return Row(
-      children: [
-        Expanded(child: Text(label)),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          thumbColor: WidgetStateProperty.resolveWith<Color>(
-            (Set<WidgetState> states) {
-              return AppColors.primaryColor;
-            },
-          ),
-          activeTrackColor: AppColors.primaryColor.withValues(alpha: 0.5),
-        )
-      ],
-    );
-  }
 
   Future<void> _predict() async {
     if (!_modelLoaded) {
@@ -342,20 +520,20 @@ class _PredictionViewState extends State<PredictionView> {
     });
 
     List<double> inputData = [
-      _highBP ? 1 : 0,
-      _highChol ? 1 : 0,
+      _highBP == "Yes" ? 1 : 0,
+      _highChol == "Yes" ? 1 : 0,
       double.tryParse(_bmiController.text) ?? 0.0,
-      _smoker ? 1 : 0,
-      _stroke ? 1 : 0,
-      _heartDisease ? 1 : 0,
-      _physActivity ? 1 : 0,
-      _fruits ? 1 : 0,
-      _veggies ? 1 : 0,
-      _alcohol ? 1 : 0,
+      _smoker == "Yes" ? 1 : 0,
+      _stroke == "Yes" ? 1 : 0,
+      _heartDisease == "Yes" ? 1 : 0,
+      _physActivity == "Yes" ? 1 : 0,
+      _fruits == "Yes" ? 1 : 0,
+      _veggies == "Yes" ? 1 : 0,
+      _alcohol == "Yes" ? 1 : 0,
       _genHealth!.toDouble(),
       _mentHealth!.toDouble(),
       _physHealth!.toDouble(),
-      _diffWalk ? 1 : 0,
+      _diffWalk == "Yes" ? 1 : 0,
       _sex == 'Male' ? 1.0 : 0.0,
       _age!.toDouble(),
       _education!.toDouble(),
@@ -428,7 +606,8 @@ class _PredictionViewState extends State<PredictionView> {
     print(inputData[2]);
     print(prediction);
     print(_predictionResult);
-
+    await uploadPredictionResult(user!.uid, _predictionResult =
+    prediction < 1 ? "Positive" : "Negative");
 // Show dialog after prediction is available
     showDialog(
       context: context,
@@ -540,7 +719,7 @@ class _PredictionViewState extends State<PredictionView> {
                         child: InkWell(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.pushNamed(context, Routes.kDoctorsView);
+                              Navigator.pushNamed(context, Routes.kDoctorSuggestionView);
                             },
                             child: Container(
                               height: 60,

@@ -26,7 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _mobileController = TextEditingController();
 
   DateTime? _selectedDate;
-  String? _selectedUserType;
+  // String? _selectedUserType;
   bool _acceptedTerms = false;
 
   @override
@@ -118,23 +118,23 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 child: Column(
                   children: [
-                    AppDropdown<String>(
-                      value: _selectedUserType,
-                      labelText: AppStrings.selectUserType,
-                      items: _userTypeItems,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedUserType = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppStrings.pleaseSelectUserType;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
+                    // AppDropdown<String>(
+                    //   value: _selectedUserType,
+                    //   labelText: AppStrings.selectUserType,
+                    //   items: _userTypeItems,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       _selectedUserType = value;
+                    //     });
+                    //   },
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return AppStrings.pleaseSelectUserType;
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
+                    // const SizedBox(height: 16),
                     AppTextField(
                       controller: _nameController,
                       labelText: AppStrings.fullName,
@@ -308,7 +308,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             'email': _emailController.text.trim(),
                             'mobile_number': _mobileController.text.trim(),
                             'date_of_birth': DateFormat('dd/MM/yyyy').format(_selectedDate!),
-                            'user_type': _selectedUserType,
+                            // 'user_type': _selectedUserType,
                             'created_at': FieldValue.serverTimestamp(),
                           });
 
@@ -393,6 +393,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
+
   void _showTermsDialog() {
     showDialog(
       context: context,

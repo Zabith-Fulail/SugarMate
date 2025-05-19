@@ -130,6 +130,8 @@ class _MedicineSearchViewState extends State<MedicineSearchView> {
           child: Column(
             children: [
               TextField(
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _searchMedicine(),
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Enter medicine name",

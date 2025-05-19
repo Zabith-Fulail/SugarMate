@@ -9,7 +9,8 @@ import 'package:sugar_mate/features/presentation/views/splash_screen/splash_scre
 import '../features/presentation/views/bmi/calculate_bmi_view.dart';
 import '../features/presentation/views/doctors/data/doctor.dart';
 import '../features/presentation/views/doctors/doctor_details.dart';
-import '../features/presentation/views/doctors/doctors_view.dart';
+import '../features/presentation/views/doctors/doctor_suggestion_view.dart';
+import '../features/presentation/views/doctors/doctors_list_view.dart';
 import '../features/presentation/views/medicine/medicine_details_view.dart';
 import '../features/presentation/views/prediction/prediction_history.dart';
 import '../features/presentation/views/prediction/prediction_view.dart';
@@ -38,6 +39,9 @@ class Routes {
   static const String kPredictionHistoryView = "kPredictionHistoryView";
   static const String kReceiptHistoryView = "kReceiptHistoryView";
   static const String kReceiptImgView = "kReceiptImgView";
+  static const String kDoctorSuggestionView = "kDoctorSuggestionView";
+  static const String kUploadReceiptScreen = "kUploadReceiptScreen";
+  static const String kReceiptListScreen = "kReceiptListScreen";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -60,7 +64,7 @@ class Routes {
             type: PageTransitionType.fade, child: HomeMainView());
       case Routes.kDoctorsView:
         return PageTransition(
-            type: PageTransitionType.fade, child: DoctorsView());
+            type: PageTransitionType.fade, child: DoctorsListView());
       case Routes.kProfileView:
         return PageTransition(
             type: PageTransitionType.fade, child: ProfileView());
@@ -101,6 +105,9 @@ class Routes {
       case Routes.kReceiptHistoryView:
         return PageTransition(
             type: PageTransitionType.fade, child: ReceiptHistoryView());
+        case Routes.kDoctorSuggestionView:
+        return PageTransition(
+            type: PageTransitionType.fade, child: DoctorSuggestionView());
       default:
         return PageTransition(
           type: PageTransitionType.fade,

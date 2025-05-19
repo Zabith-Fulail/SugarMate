@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -14,6 +17,42 @@ class UploadReceiptView extends StatefulWidget {
 
 class _UploadReceiptViewState extends State<UploadReceiptView> {
   File? _selectedImage;
+  Future<void> _uploadReceipt() async {
+    if (_selectedImage == null) return;
+
+    try {
+      final fileName = 'receipts/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+      // Upload image to Firebase Storage
+      final uploadTask = await storageRef.putFile(_selectedImage!);
+      final downloadUrl = await storageRef.getDownloadURL();
+
+      // Get current user ID (if using Firebase Auth)
+      final userId = FirebaseAuth.instance.currentUser?.uid ?? 'anonymous';
+
+      // Save metadata to Firestore
+      await FirebaseFirestore.instance.collection('receipt_uploads').add({
+        'userId': userId,
+        'url': downloadUrl,
+        'uploadedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Show success
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Receipt uploaded successfully")),
+      );
+
+      setState(() {
+        _selectedImage = null;
+      });
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Upload failed: $e")),
+      );
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -109,11 +148,7 @@ class _UploadReceiptViewState extends State<UploadReceiptView> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _selectedImage != null
-                    ? () {
-                        // Upload logic here
-                      }
-                    : null,
+                onPressed: _selectedImage != null ? _uploadReceipt : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   disabledBackgroundColor:
@@ -138,6 +173,7 @@ class _UploadReceiptViewState extends State<UploadReceiptView> {
     );
   }
 }
+
 
 // Helper widget for the dashed-border container
 class DottedBorderContainer extends StatelessWidget {

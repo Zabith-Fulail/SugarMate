@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../utils/app_colors.dart';
@@ -14,6 +15,7 @@ class _SettingsViewState extends State<SettingsView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _currentPassword = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
@@ -25,13 +27,33 @@ class _SettingsViewState extends State<SettingsView> {
     super.dispose();
   }
 
-  void _saveChanges() {
-    if (_formKey.currentState!.validate()) {
-      // Save the changes (API call etc.)
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Changes saved successfully!')),
+  // void _saveChanges() {
+  //   if (_formKey.currentState!.validate()) {
+  //     // Save the changes (API call etc.)
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Changes saved successfully!')),
+  //     );
+  //   }
+  // }
+
+  Future<bool> reauthenticateUser(String currentPassword) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && user.email != null) {
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
       );
+
+      try {
+        await user.reauthenticateWithCredential(credential);
+        return true;
+      } on FirebaseAuthException catch (e) {
+        print('Reauthentication failed: ${e.message}');
+        return false;
+      }
     }
+    return false;
   }
 
   @override
@@ -59,31 +81,46 @@ class _SettingsViewState extends State<SettingsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Update Email',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 10),
+              // const Text(
+              //   'Update Email',
+              //   style: TextStyle(
+              //     fontSize: 18,
+              //     fontWeight: FontWeight.bold,
+              //     color: Colors.black,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
+              // AppTextField(
+              //   controller: _emailController,
+              //   labelText: 'Email',
+              //   keyboardType: TextInputType.emailAddress,
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please enter your email';
+              //     }
+              //     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+              //         .hasMatch(value)) {
+              //       return 'Enter a valid email address';
+              //     }
+              //     return null;
+              //   },
+              // ),
+              // const SizedBox(height: 30),
               AppTextField(
-                controller: _emailController,
-                labelText: 'Email',
-                keyboardType: TextInputType.emailAddress,
+                controller: _currentPassword,
+                labelText: 'Current Password',
+                obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Please enter password';
                   }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                      .hasMatch(value)) {
-                    return 'Enter a valid email address';
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               const Text(
                 'Update Password',
                 style: TextStyle(
@@ -149,4 +186,50 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     );
   }
+  void _saveChanges() async {
+    if (_formKey.currentState!.validate()) {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No user logged in.')),
+        );
+        return;
+      }
+
+      // Try to reauthenticate with the current password
+      bool reauthenticated = await reauthenticateUser(_currentPassword.text);
+
+      if (!reauthenticated) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Current password is incorrect.')),
+        );
+        return;
+      }
+
+      try {
+        // Now update the password since reauthentication succeeded
+        await user.updatePassword(_passwordController.text);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password updated successfully!')),
+        );
+
+        // Clear the fields
+        _currentPassword.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.message}')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+
 }

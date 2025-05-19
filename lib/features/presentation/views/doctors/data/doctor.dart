@@ -34,7 +34,6 @@ class Doctor {
   final List<String> chanellingCentres;
   final String image;
   final int experience;
-  final double rating;
 
   Doctor({
     required this.name,
@@ -46,13 +45,17 @@ class Doctor {
     required this.chanellingCentres,
     required this.image,
     required this.experience,
-    required this.rating,
   });
+
+  @override
+  String toString() {
+    return 'Doctor{name: $name, qualifications: $qualifications, email: $email, mobile: $mobile, hospitals: $hospitals, chanellingCentres: $chanellingCentres, image: $image}';
+  }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'specialization': specialization,
+      // 'specialization': specialization,
       'qualifications': qualifications,
       'email': email,
       'mobile': mobile,
@@ -64,21 +67,21 @@ class Doctor {
 
   Future<void> uploadDoctorsToFirestore(List<Doctor> doctors) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final CollectionReference doctorCollection = firestore.collection('doctors');
+    final CollectionReference doctorCollection =
+        firestore.collection('doctors');
 
     for (Doctor doctor in doctors) {
       try {
         await doctorCollection.add({
           'name': doctor.name,
-          'specialization': doctor.specialization,
+          // 'specialization': doctor.specialization,
           'qualifications': doctor.qualifications,
           'email': doctor.email,
           'mobile': doctor.mobile,
           'hospitals': doctor.hospitals,
           'chanellingCentres': doctor.chanellingCentres,
           'image': doctor.image,
-          'experience': doctor.experience,
-          'rating': doctor.rating,
+          // 'experience': doctor.experience,
         });
         print('Uploaded: ${doctor.name}');
       } catch (e) {
@@ -86,8 +89,6 @@ class Doctor {
       }
     }
   }
-
-
 }
 
 ///list of doctors to add manually

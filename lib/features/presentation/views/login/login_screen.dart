@@ -207,28 +207,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 8),
-                          // Forgot Password Button
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Implement forgot password navigation
-                              // Navigator.of(context)
-                              //     .pushNamed(Routes.kForgotPassword);
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(50, 30),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              foregroundColor: AppColors.primaryColor,
-                            ),
-                            child: Text(
-                              AppStrings.forgotPassword,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
+                          // const SizedBox(height: 8),
+                          // // Forgot Password Button
+                          // TextButton(
+                          //   onPressed: () {
+                          //     // TODO: Implement forgot password navigation
+                          //     // Navigator.of(context)
+                          //     //     .pushNamed(Routes.kForgotPassword);
+                          //   },
+                          //   style: TextButton.styleFrom(
+                          //     padding: EdgeInsets.zero,
+                          //     minimumSize: const Size(50, 30),
+                          //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          //     foregroundColor: AppColors.primaryColor,
+                          //   ),
+                          //   child: Text(
+                          //     AppStrings.forgotPassword,
+                          //     style: const TextStyle(
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

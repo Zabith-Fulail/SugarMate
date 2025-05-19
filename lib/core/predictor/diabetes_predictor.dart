@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 class DiabetesPredictor {
@@ -24,17 +26,25 @@ class DiabetesPredictor {
     return List.generate(input.length, (i) => (input[i] - _means[i]) / _stds[i]);
   }
 
+
   Future<double> predict(List<double> inputData) async {
     if (_interpreter == null) {
       throw Exception("Interpreter not loaded");
     }
 
     final scaledInput = _standardScale(inputData);
-
     var input = [scaledInput]; // shape [1, 18]
     var output = List.filled(1 * 1, 0.0).reshape([1, 1]); // shape [1, 1]
 
     _interpreter!.run(input, output);
-    return output[0][0];
+
+    final rawLogit = output[0][0];
+    final sigmoid = 1 / (1 + exp(-rawLogit)); // apply sigmoid manually
+
+    print("Raw output: $rawLogit");
+    print("Sigmoid probability: $sigmoid");
+
+    return sigmoid;
   }
+
 }

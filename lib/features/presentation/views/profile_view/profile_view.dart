@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,16 +16,48 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
   DateTime? _birthday;
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+
+  }
+
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+    print('user?.uid');
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final data = doc.data();
+    print('data ${data}');
+    if (data != null) {
+      final fullName = data['full_name']?.split(' ') ?? ['', ''];
+      _fullNameController.text = fullName.first;
+      // _lastNameController.text = fullName.length > 1 ? fullName.sublist(1).join(' ') : '';
+      _emailController.text = data['email'] ?? '';
+      _mobileController.text = data['mobile_number'] ?? '';
+      if (data['date_of_birth'] != null) {
+        try {
+          _birthday = DateFormat('dd/MM/yyyy').parse(data['date_of_birth']);
+        } catch (_) {}
+      }
+      setState(() {});
+      print(_fullNameController.text);
+      print('asdfasdf');
+    }
+  }
+
+  @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _fullNameController.dispose();
+    // _lastNameController.dispose();
     _emailController.dispose();
     _mobileController.dispose();
     super.dispose();
@@ -135,7 +169,7 @@ class _ProfileViewState extends State<ProfileView> {
                 child: Column(
                   children: [
                     AppTextField(
-                      controller: _firstNameController,
+                      controller: _fullNameController,
                       labelText: AppStrings.firstName,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -144,17 +178,17 @@ class _ProfileViewState extends State<ProfileView> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
-                    AppTextField(
-                      controller: _lastNameController,
-                      labelText: AppStrings.lastName,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter last name';
-                        }
-                        return null;
-                      },
-                    ),
+                    // const SizedBox(height: 16),
+                    // AppTextField(
+                    //   controller: _lastNameController,
+                    //   labelText: AppStrings.lastName,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Please enter last name';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     const SizedBox(height: 16),
                     AppTextField(
                       controller: TextEditingController(
@@ -211,9 +245,26 @@ class _ProfileViewState extends State<ProfileView> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // TODO: Implement Save Profile logic
+                      if (_formKey.currentState!.validate()) {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user == null) return;
+
+                        // final fullName = '${_fullNameController.text} ${_lastNameController.text}';
+                        final dob = _birthday != null ? DateFormat('dd/MM/yyyy').format(_birthday!) : null;
+
+                        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+                          // 'full_name': fullName,
+                          'email': _emailController.text.trim(),
+                          'mobile_number': _mobileController.text.trim(),
+                          'date_of_birth': dob,
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Profile updated successfully!')),
+                        );
+                      }
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Profile saved successfully!')),
                       );
