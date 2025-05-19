@@ -21,6 +21,55 @@ class _DoctorsListViewState extends State<DoctorsListView> {
   bool isLoading = true;
   List<String> allCities = [];
   String? selectedCity;
+  final List<LatLng> staticLocations = [
+    LatLng(6.869571362245269, 79.92640675040384),
+    LatLng(6.890001794855813, 79.87566658465792),
+    LatLng(6.87869033868979, 79.93525301534206),
+    LatLng(6.920501658713063, 79.85388446931586),
+    LatLng(6.920639358672688, 79.86573526931586),
+    LatLng(6.920337012141919, 79.85374734048034),
+    LatLng(6.9206819613330195, 79.86586401534207),
+    LatLng(6.922958209842572, 79.86590573068412),
+    LatLng(6.991171432299349, 79.93838124417758),
+    LatLng(6.902310370536264, 79.85357901534206),
+  ];
+
+
+
+  Set<Marker> _getCityMarkers() {
+    final markers = <Marker>{};
+
+    // Existing doctor-based markers
+    for (var doctor in filteredDoctors) {
+      for (var hospital in doctor.hospitals) {
+        final city = _extractCity(hospital);
+        final latLng = cityCoordinates[city];
+        if ((selectedCity == null || selectedCity == city) && latLng != null) {
+          markers.add(
+            Marker(
+              markerId: MarkerId('$city-${doctor.name}'),
+              position: latLng,
+              infoWindow: InfoWindow(title: doctor.name),
+            ),
+          );
+        }
+      }
+    }
+
+    // New: Static coordinate markers
+    for (int i = 0; i < staticLocations.length; i++) {
+      markers.add(
+        Marker(
+          markerId: MarkerId('static-$i'),
+          position: staticLocations[i],
+          infoWindow: InfoWindow(title: 'Location ${i + 1}'),
+        ),
+      );
+    }
+
+    return markers;
+  }
+
   // Helper: Extract city from hospital string
   String _extractCity(String hospital) {
     // Assumes city is after last comma
@@ -329,28 +378,28 @@ class _DoctorsListViewState extends State<DoctorsListView> {
     }
     return const LatLng(6.9271, 79.8612); // Default to Colombo
   }
-  Set<Marker> _getCityMarkers() {
-    final markers = <Marker>{};
-
-    for (var doctor in filteredDoctors) {
-      for (var hospital in doctor.hospitals) {
-        final city = _extractCity(hospital);
-        if (selectedCity == null || selectedCity == city) {
-          final latLng = cityCoordinates[city];
-          if (latLng != null) {
-            markers.add(
-              Marker(
-                markerId: MarkerId('$city-${doctor.name}'),
-                position: latLng,
-                infoWindow: InfoWindow(title: doctor.name),
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    return markers;
-  }
+  // Set<Marker> _getCityMarkers() {
+  //   final markers = <Marker>{};
+  //
+  //   for (var doctor in filteredDoctors) {
+  //     for (var hospital in doctor.hospitals) {
+  //       final city = _extractCity(hospital);
+  //       if (selectedCity == null || selectedCity == city) {
+  //         final latLng = cityCoordinates[city];
+  //         if (latLng != null) {
+  //           markers.add(
+  //             Marker(
+  //               markerId: MarkerId('$city-${doctor.name}'),
+  //               position: latLng,
+  //               infoWindow: InfoWindow(title: doctor.name),
+  //             ),
+  //           );
+  //         }
+  //       }
+  //     }
+  //   }
+  //
+  //   return markers;
+  // }
 
 }

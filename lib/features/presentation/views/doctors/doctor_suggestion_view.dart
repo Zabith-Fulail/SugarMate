@@ -13,10 +13,22 @@ class DoctorSuggestionView extends StatefulWidget {
 
 class _DoctorSuggestionViewState extends State<DoctorSuggestionView> {
   late GoogleMapController mapController;
+  final List<LatLng> staticLocations = [
+    LatLng(6.869571362245269, 79.92640675040384),
+    LatLng(6.890001794855813, 79.87566658465792),
+    LatLng(6.87869033868979, 79.93525301534206),
+    LatLng(6.920501658713063, 79.85388446931586),
+    LatLng(6.920639358672688, 79.86573526931586),
+    LatLng(6.920337012141919, 79.85374734048034),
+    LatLng(6.9206819613330195, 79.86586401534207),
+    LatLng(6.922958209842572, 79.86590573068412),
+    LatLng(6.991171432299349, 79.93838124417758),
+    LatLng(6.902310370536264, 79.85357901534206),
+  ];
   LatLng? userLocation;
   LatLng? doctorHospitalLocation;
 
-  final String hospitalUrl = 'https://maps.app.goo.gl/3RL53aqgSmweJyvf8?g_st=com.google.maps.preview.copy'; // Nawaloka Hospital
+  final String hospitalUrl = 'https://maps.app.goo.gl/3RL53aqgSmweJyvf8?g_st=com.google.maps.preview.copy';
   final String doctorName = "Dr. Uditha Bulugahapitiya";
 
   @override
