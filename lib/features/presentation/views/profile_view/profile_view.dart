@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_strings.dart';
 import '../../widgets/app_text_field.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -15,11 +21,16 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  File? _pickedImage;
+  bool _isUploading = false;
+  Uint8List? _imageBytes;
+
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
   DateTime? _birthday;
+  String? _profileImageUrl;
 
   @override
   void initState() {
@@ -43,6 +54,7 @@ class _ProfileViewState extends State<ProfileView> {
       // _lastNameController.text = fullName.length > 1 ? fullName.sublist(1).join(' ') : '';
       _emailController.text = data['email'] ?? '';
       _mobileController.text = data['mobile_number'] ?? '';
+      _profileImageUrl = data['profile_image'];
       if (data['date_of_birth'] != null) {
         try {
           _birthday = DateFormat('dd/MM/yyyy').parse(data['date_of_birth']);
@@ -51,6 +63,8 @@ class _ProfileViewState extends State<ProfileView> {
       setState(() {});
       print(_fullNameController.text);
       print('asdfasdf');
+      print(_profileImageUrl);
+      _imageBytes = base64Decode(_profileImageUrl??"");
     }
   }
 
@@ -90,14 +104,51 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  void _editProfilePicture() {
-    // TODO: Implement picking image from gallery or camera
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Change profile picture tapped!'),
-      ),
-    );
+  void _editProfilePicture() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile == null) return;
+
+    setState(() {
+      _pickedImage = File(pickedFile.path);
+      _isUploading = true;
+    });
+
+    final File imageFile = File(pickedFile.path);
+
+    try {
+      final bytes = await _pickedImage!.readAsBytes();
+      final base64String = base64Encode(bytes);
+
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not logged in')),
+        );
+        setState(() => _isUploading = false);
+        return;
+      }
+
+      // Update Firestore with profile image
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'profile_image': base64String,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Upload successful')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Upload failed: $e')),
+      );
+    } finally {
+      setState(() {
+        _isUploading = false;
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +178,9 @@ class _ProfileViewState extends State<ProfileView> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/default_profile.png'),
+                      backgroundImage: _imageBytes != null
+                          ? MemoryImage(_imageBytes!)
+                          : const AssetImage('assets/images/default_profile.png'),
                       // Change this to your default image
                       backgroundColor: AppColors.appWhiteColor,
                     ),
@@ -292,4 +345,10 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+
+
+
+
 }
+
+
