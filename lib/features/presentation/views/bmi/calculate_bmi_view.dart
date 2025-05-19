@@ -4,10 +4,10 @@ import '../../../../utils/app_colors.dart';
 import '../../widgets/app_text_field.dart'; // Import your AppTextField
 
 class BMICalculator extends StatefulWidget {
-  const BMICalculator({Key? key}) : super(key: key);
+  const BMICalculator({super.key});
 
   @override
-  _BMICalculatorState createState() => _BMICalculatorState();
+  State<BMICalculator> createState() => _BMICalculatorState();
 }
 
 class _BMICalculatorState extends State<BMICalculator> {
