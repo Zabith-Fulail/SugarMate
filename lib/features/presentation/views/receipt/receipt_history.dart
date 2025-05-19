@@ -1,34 +1,71 @@
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/views/receipt/receipt_img_view.dart';
 import 'package:sugar_mate/utils/navigation_routes.dart';
-
 import '../../../../utils/app_colors.dart';
 
-class ReceiptHistoryView extends StatelessWidget {
+class ReceiptHistoryView extends StatefulWidget {
   const ReceiptHistoryView({super.key});
 
   @override
+  State<ReceiptHistoryView> createState() => _ReceiptHistoryViewState();
+}
+
+class _ReceiptHistoryViewState extends State<ReceiptHistoryView> {
+  List<Map<String, dynamic>> receipts = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReceipts();
+  }
+
+  Future<void> _fetchReceipts() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      // handle no user logged in scenario if needed
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('receipts')
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('uploadedAt', descending: true)
+          .get();
+
+      final data = querySnapshot.docs.map((doc) {
+        final docData = doc.data();
+        return {
+          'id': doc.id,
+          'base64Image': docData['base64Image'] ?? '',
+          'uploadedAt': (docData['uploadedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+        };
+      }).toList();
+
+      setState(() {
+        receipts = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle error
+      setState(() {
+        isLoading = false;
+      });
+      print('Error fetching receipts: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Simulating receipt data (this could be a list of paths to images stored locally or assets)
-    final List<Map<String, dynamic>> receipts = [
-      {
-        'imageUrl': 'assets/images/receipt_1.png',  // Image path (simulated)
-        'uploadedAt': DateTime.now().subtract(Duration(days: 1)),
-        'id': '1',
-      },
-      {
-        'imageUrl': 'assets/images/receipt_2.png',  // Image path (simulated)
-        'uploadedAt': DateTime.now().subtract(Duration(days: 2)),
-        'id': '2',
-      },
-      // {
-      //   'imageUrl': 'assets/receipt3.jpg',  // Image path (simulated)
-      //   'uploadedAt': DateTime.now().subtract(Duration(days: 3)),
-      //   'id': '3',
-      // },
-    ];
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         iconTheme: IconThemeData(color: AppColors.appWhiteColor),
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.appWhiteColor,
@@ -40,30 +77,42 @@ class ReceiptHistoryView extends StatelessWidget {
           color: AppColors.appWhiteColor,
         ),
       ),
-      body: receipts.isEmpty
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : receipts.isEmpty
           ? const Center(child: Text("No receipts uploaded yet."))
           : ListView.builder(
         itemCount: receipts.length,
         itemBuilder: (context, index) {
           final data = receipts[index];
-          final imageUrl = data['imageUrl'] ?? '';
+          final base64Image = data['base64Image'] as String? ?? '';
           final uploadedAt = data['uploadedAt'] as DateTime?;
+          final id = data['id'] as String? ?? '';
 
           return InkWell(
-            onTap: (){
-              Navigator.pushNamed(context, Routes.kReceiptImgView,arguments: ReceiptImgArgs(
-                imagePath: imageUrl,
-                uploadedAt: uploadedAt ?? DateTime.now(),
-              ));
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.kReceiptImgView,
+                arguments: ReceiptImgArgs(
+                  imagePath: base64Image, // pass base64 string here
+                  uploadedAt: uploadedAt ?? DateTime.now(),
+                ),
+              );
             },
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
-                leading: imageUrl.isNotEmpty
-                    ? Image.asset(imageUrl, width: 50, height: 50, fit: BoxFit.cover)
+                leading: base64Image.isNotEmpty
+                    ? Image.memory(
+                  base64Decode(base64Image),
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )
                     : const Icon(Icons.receipt),
                 title: Text("Uploaded: ${uploadedAt?.toLocal().toString().split('.').first ?? 'Unknown'}"),
-                subtitle: Text("Receipt ID: ${data['id']}"),
+                subtitle: Text("Receipt ID: $id"),
               ),
             ),
           );

@@ -150,8 +150,9 @@ class _HomeMainViewState extends State<HomeMainView> {
                           icon: Icons.upload_file,
                           title: 'Upload Receipts',
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, Routes.kUploadReceiptView);
+                            Navigator.pushNamed(context, Routes.kUploadReceiptView);
+                            // Navigator.pushNamed(
+                            //     context, Routes.kUploadReceiptView);
                           },
                         ),
                       ),

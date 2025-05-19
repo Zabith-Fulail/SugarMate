@@ -17,11 +17,10 @@ import '../features/presentation/views/prediction/prediction_view.dart';
 import '../features/presentation/views/profile_view/profile_view.dart';
 import '../features/presentation/views/receipt/receipt_history.dart';
 import '../features/presentation/views/receipt/receipt_img_view.dart';
-import '../features/presentation/views/receipt/upload_receipt_view.dart';
+import '../features/presentation/views/receipt/upload_receipts_screen.dart';
 import '../features/presentation/views/settings/settings_view.dart';
 import 'app_colors.dart';
 import 'app_styling.dart';
-
 class Routes {
   static const String kSplashScreen = "kSplashScreen";
   static const String kLandingScreen = "kLandingScreen";
@@ -32,7 +31,7 @@ class Routes {
   static const String kProfileView = "kProfileView";
   static const String kDoctorDetails = "kDoctorDetails";
   static const String kSettingsView = "kSettingsView";
-  static const String kUploadReceiptView = "kUploadReceiptView";
+
   static const String kPredictionView = "kPredictionView";
   static const String kMedicineSearchView = "kMedicineSearchView";
   static const String kBMICalculator = "kBMICalculator";
@@ -40,8 +39,7 @@ class Routes {
   static const String kReceiptHistoryView = "kReceiptHistoryView";
   static const String kReceiptImgView = "kReceiptImgView";
   static const String kDoctorSuggestionView = "kDoctorSuggestionView";
-  static const String kUploadReceiptScreen = "kUploadReceiptScreen";
-  static const String kReceiptListScreen = "kReceiptListScreen";
+  static const String kUploadReceiptView = "kUploadReceiptView";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -90,9 +88,9 @@ class Routes {
           child: PredictionHistoryView(),
           type: PageTransitionType.fade,
         );
-      case Routes.kUploadReceiptView:
-        return PageTransition(
-            type: PageTransitionType.fade, child: UploadReceiptView());
+      // case Routes.kUploadReceiptView:
+      //   return PageTransition(
+      //       type: PageTransitionType.fade, child: UploadReceiptView());
       case Routes.kPredictionView:
         return PageTransition(
             type: PageTransitionType.fade, child: PredictionView());
@@ -105,9 +103,15 @@ class Routes {
       case Routes.kReceiptHistoryView:
         return PageTransition(
             type: PageTransitionType.fade, child: ReceiptHistoryView());
-        case Routes.kDoctorSuggestionView:
+      case Routes.kDoctorSuggestionView:
         return PageTransition(
             type: PageTransitionType.fade, child: DoctorSuggestionView());
+        case Routes.kUploadReceiptView:
+        return PageTransition(
+            type: PageTransitionType.fade, child: UploadReceipt());
+      // case Routes.kUploadReceiptView:
+      //   return PageTransition(
+      //       type: PageTransitionType.fade, child: UploadReceiptView());
       default:
         return PageTransition(
           type: PageTransitionType.fade,
