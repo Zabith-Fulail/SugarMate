@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +19,36 @@ class HamburgerMenu extends StatefulWidget {
 class _HamburgerMenuState extends State<HamburgerMenu> {
   String? fullName;
   String? email;
-
+  Uint8List? _imageBytes;
+  String? _profileImageUrl;
   @override
   void initState() {
     super.initState();
+    _loadUserProfile();
+
     _loadUserData();
+
   }
+
+
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+    print('user?.uid');
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final data = doc.data();
+    if (data != null) {
+      final fullName = data['full_name']?.split(' ') ?? ['', ''];
+
+      _profileImageUrl = data['profile_image'];
+
+      _imageBytes = base64Decode(_profileImageUrl??"");
+    }
+  }
+  @override
+
   Future<void> _loadUserData() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -49,11 +76,14 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
             ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: AppColors.appWhiteColor,
-              child: Icon(
-                Icons.person,
-                color: AppColors.primaryColor,
-                size: 40,
-              ),
+              backgroundImage: _imageBytes != null
+                  ? MemoryImage(_imageBytes!)
+                  : const AssetImage('assets/images/default_profile.png'),
+              // child: Icon(
+              //   Icons.person,
+              //   color: AppColors.primaryColor,
+              //   size: 40,
+              // ),
             ),
             accountName: Text(fullName ?? ""),
             accountEmail: Text(email ?? ""),
