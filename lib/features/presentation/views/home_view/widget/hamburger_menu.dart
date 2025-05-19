@@ -57,10 +57,9 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
           .collection('users')
           .doc(user.uid)
           .get();
-
       setState(() {
         email = user.email;
-        fullName = doc.data()?['fullName'] ?? 'No Name';
+        fullName = doc.data()?['full_name'] ?? 'No Name';
       });
     }
   }
