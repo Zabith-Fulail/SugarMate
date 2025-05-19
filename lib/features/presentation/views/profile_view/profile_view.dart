@@ -1,16 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_strings.dart';
 import '../../widgets/app_text_field.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 
 class ProfileView extends StatefulWidget {
@@ -134,7 +134,10 @@ class _ProfileViewState extends State<ProfileView> {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
         'profile_image': base64String,
       });
+      _imageBytes = base64Decode(base64String);
+      setState(() {
 
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Upload successful')),
       );

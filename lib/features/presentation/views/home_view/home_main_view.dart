@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sugar_mate/features/presentation/views/home_view/widget/hamburger_menu.dart';
 import 'package:sugar_mate/features/presentation/views/home_view/widget/option_card.dart';
@@ -16,6 +21,8 @@ class HomeMainView extends StatefulWidget {
 
 class _HomeMainViewState extends State<HomeMainView> {
   int _currentCarouselIndex = 0;
+  Uint8List? _imageBytes;
+  String? _profileImageUrl;
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
@@ -36,7 +43,27 @@ class _HomeMainViewState extends State<HomeMainView> {
       'description': 'Quickly upload and manage your medical receipts',
     },
   ];
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+    print('user?.uid');
+    if (user == null) return;
 
+    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final data = doc.data();
+    if (data != null) {
+      final fullName = data['full_name']?.split(' ') ?? ['', ''];
+
+      _profileImageUrl = data['profile_image'];
+
+      _imageBytes = base64Decode(_profileImageUrl??"");
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,14 +83,13 @@ class _HomeMainViewState extends State<HomeMainView> {
           CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.appWhiteColor,
+            backgroundImage: _imageBytes != null
+          ? MemoryImage(_imageBytes!)
+            : const AssetImage('assets/images/default_profile.png'),
             child: InkWell(
               onTap: () {
                 Navigator.pushNamed(context, Routes.kProfileView);
               },
-              child: Icon(
-                Icons.person,
-                color: AppColors.primaryColor,
-              ),
             ),
           ),
           const SizedBox(width: 16),
