@@ -64,7 +64,19 @@ class Doctor {
       'image': image,
     };
   }
-
+  factory Doctor.fromFirestore(Map<String, dynamic> data) {
+    return Doctor(
+      name: data['name'] ?? '',
+      specialization: data['specialization'] ?? '',
+      qualifications: data['qualifications'] ?? '',
+      email: data['email'] ?? '',
+      mobile: data['mobile'] ?? '',
+      hospitals: List<String>.from(data['hospitals'] ?? []),
+      chanellingCentres: List<String>.from(data['chanellingCentres'] ?? []),
+      image: data['image'] ?? '',
+      experience: data['experience'] ?? 0,
+    );
+  }
   Future<void> uploadDoctorsToFirestore(List<Doctor> doctors) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final CollectionReference doctorCollection =
